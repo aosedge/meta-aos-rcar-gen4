@@ -56,25 +56,21 @@ to ensure that Xen and DomD/DomU will work correctly.
 ## Fetching
 
 You can fetch/clone this whole repository, but you actually only need
-one file from it: `prod-devel-rcar-s4.yaml`. During the build `moulin`
+one file from it: `prod-aos-rcar-s4.yaml`. During the build `moulin`
 will fetch this repository again into `yocto/` directory. So, to
-reduce possible confuse, we recommend to download only
-`prod-devel-rcar-s4.yaml`:
-
-```
-# curl -O https://raw.githubusercontent.com/xen-troops/meta-xt-prod-devel-rcar-gen4/spider-0.8.0/prod-devel-rcar-s4.yaml
-```
+reduce possible confuse, we recommend copy `prod-aos-rcar-s4.yaml` into your 
+build directory.
 
 ## Building
 
 Moulin is used to generate Ninja build file: `moulin
-prod-devel-rcar-s4.yaml`. This project provides number of additional
+prod-aos-rcar-s4.yaml`. This project provides number of additional
 parameters. You can check them with `--help-config` command
 line option:
 
 ```
-# moulin prod-devel-rcar-s4.yaml --help-config
-usage: moulin prod-devel-rcar-s4.yaml [--ENABLE_DOMU {no,yes}]
+# moulin prod-aos-rcar-s4.yaml --help-config
+usage: moulin prod-aos-rcar-s4.yaml [--ENABLE_DOMU {no,yes}]
 
 Config file description: Xen-Troops development setup for Renesas RCAR Gen4
 hardware
@@ -89,7 +85,7 @@ disable DomU build with `--ENABLE_DOMU=yes` option.
 Be default it is disabled.
 
 So, to build with DomU (generic Yocto-based virtual machine) use the
-following command line: `moulin prod-devel-rcar-s4.yaml
+following command line: `moulin prod-aos-rcar-s4.yaml
 --ENABLE_DOMU=yes`.
 
 Moulin will generate `build.ninja` file. After that run `ninja` to
@@ -131,7 +127,7 @@ This XT product provides only one image: `full`.
 You can prepare the image by running
 
 ```
-# rouge prod-devel-rcar-s4.yaml --ENABLE_DOMU=yes -i full
+# rouge prod-aos-rcar-s4.yaml --ENABLE_DOMU=yes -i full
 ```
 
 This will create file `full.img` in your current directory.
@@ -139,7 +135,7 @@ This will create file `full.img` in your current directory.
 Also you can write image directly to an SD card by running
 
 ```
-# sudo rouge prod-devel-rcar.yaml --ENABLE_DOMU=yes -i full -so /dev/sdX
+# sudo rouge prod-aos-rcar.yaml --ENABLE_DOMU=yes -i full -so /dev/sdX
 ```
 
 **BE SURE TO PROVIDE CORRECT DEVICE NAME**. `rouge` has no
