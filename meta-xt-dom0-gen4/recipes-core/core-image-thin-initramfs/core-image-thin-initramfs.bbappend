@@ -8,6 +8,12 @@ generate_uboot_image() {
 }
 
 
-IMAGE_POSTPROCESS_COMMAND += " generate_uboot_image; "
+set_image_version() {
+    install -d ${DEPLOY_DIR_IMAGE}/aos
+    echo "VERSION=\"${DOM0_IMAGE_VERSION}\"" > ${DEPLOY_DIR_IMAGE}/aos/version
+}
+
+IMAGE_POSTPROCESS_COMMAND += " generate_uboot_image; set_image_version; "
 
 IMAGE_ROOTFS_SIZE = "65535"
+
