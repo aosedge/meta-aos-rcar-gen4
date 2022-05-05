@@ -30,6 +30,9 @@ common_data:
       url: "git://git.yoctoproject.org/meta-virtualization"
       rev: 180241e
     - type: git
+      url: "git://git.yoctoproject.org/meta-arm"
+      rev: 5c0968
+    - type: git
       url: "https://github.com/xen-troops/meta-xt-common.git"
       rev: master
     - type: git
@@ -83,6 +86,9 @@ common_data:
 
     # Generate ext4 image files
     - [IMAGE_FSTYPES_append, " ext4"]
+
+    # Disable renesas optee recipes
+    - [BBMASK, "meta-renesas/.*/optee|meta-xt-domx-gen4/recipes-bsp/optee.*"]
 
 components:
   dom0:
@@ -170,6 +176,8 @@ components:
         - "../meta-openembedded/meta-networking"
         - "../meta-openembedded/meta-python"
         - "../meta-openembedded/meta-filesystems"
+        - "../meta-arm/meta-arm"
+        - "../meta-arm/meta-arm-toolchain"
         - "../meta-aos"
         - "../meta-renesas/meta-rcar-gateway"
         - "../meta-xt-common/meta-xt-domx"
@@ -199,6 +207,8 @@ components:
         - "../meta-openembedded/meta-oe"
         - "../meta-openembedded/meta-filesystems"
         - "../meta-openembedded/meta-python"
+        - "../meta-arm/meta-arm"
+        - "../meta-arm/meta-arm-toolchain"
         - "../meta-renesas/meta-rcar-gateway"
         - "../meta-xt-common/meta-xt-domu"
         - "../meta-aos-rcar-gen4/meta-xt-domx-gen4"
