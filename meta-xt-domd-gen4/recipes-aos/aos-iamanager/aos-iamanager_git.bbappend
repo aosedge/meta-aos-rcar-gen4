@@ -33,7 +33,8 @@ RDEPENDS_${PN} = " \
     aos-provfinish \
     aos-rootca \
     aos-setupdisk \
-    softhsm \
+    optee-os \
+    optee-client \
 "
 
 do_install_append() {

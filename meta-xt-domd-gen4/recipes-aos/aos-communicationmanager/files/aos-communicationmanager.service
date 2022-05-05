@@ -8,6 +8,7 @@ ConditionPathExists=!/var/aos/.unprovisioned
 PartOf=aos.target
 
 [Service]
+Environment="CKTEEC_LOGIN_TYPE=user"
 Type=notify
 ExecStart=/usr/bin/aos_communicationmanager -c /etc/aos/aos_communicationmanager.cfg -v debug -j
 Restart=always

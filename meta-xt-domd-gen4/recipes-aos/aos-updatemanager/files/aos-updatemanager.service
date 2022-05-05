@@ -10,6 +10,7 @@ ConditionPathExists=!/var/aos/.unprovisioned
 PartOf=aos.target
 
 [Service]
+Environment="CKTEEC_LOGIN_TYPE=user"
 Type=notify
 ExecStart=/usr/bin/aos_updatemanager -c /etc/aos/aos_updatemanager.cfg -v debug -j
 # It is important to do not restart UM on normal exit. This case is used when system
