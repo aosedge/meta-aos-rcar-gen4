@@ -16,6 +16,9 @@ IMAGE_INSTALL += " \
     aos-vis \
 "
 
+# Enable RO rootfs
+IMAGE_FEATURES_append = " read-only-rootfs"
+
 # Aos related tasks
 
 ROOTFS_POSTPROCESS_COMMAND_append += "set_board_model; set_rootfs_version;"
