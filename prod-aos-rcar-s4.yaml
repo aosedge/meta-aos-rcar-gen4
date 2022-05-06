@@ -162,6 +162,15 @@ components:
         - *DOMD_DOMU_CONF
         - [XT_DOM_NAME, "domd"]
         - [XT_DEVICE_TREES, "%{XT_DOMD_DTB_NAME} %{XT_XEN_DTB_NAME}"]
+
+        # Initramfs configuration
+        - [INITRAMFS_IMAGE, "core-image-tiny-initramfs"]
+        - [INITRAMFS_IMAGE_BUNDLE, "0"]
+        - [INITRAMFS_FSTYPES, "cpio.gz"]
+
+        # Do not install kernel image to rootfs to decrease initrd size
+        - ["RDEPENDS_${KERNEL_PACKAGE_NAME}-base", ""]
+
         # Aos config
         - [AOS_RUNNER, "crun"]
 
