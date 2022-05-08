@@ -7,6 +7,11 @@ IMAGE_INSTALL += " \
 
 IMAGE_INSTALL += "iproute2 tcpdump"
 
+# System compomnents
+IMAGE_INSTALL += " \
+    openssh \
+"
+
 # Aos components
 IMAGE_INSTALL += " \
     aos-communicationmanager \
