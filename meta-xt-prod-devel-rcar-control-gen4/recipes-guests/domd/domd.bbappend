@@ -15,8 +15,8 @@ do_install_append() {
     install -m 0744 ${WORKDIR}/domd-set-root ${D}${libdir}/xen/bin
 
     # Call domd-set-root script
-    echo "[Service]" >> ${D}${systemd_unitdir}/system/domd.service
-    echo "ExecStartPre=${libdir}/xen/bin/domd-set-root" >> ${D}${systemd_unitdir}/system/domd.service
+    echo "[Service]" >> ${D}${systemd_system_unitdir}/domd.service
+    echo "ExecStartPre=${libdir}/xen/bin/domd-set-root" >> ${D}${systemd_system_unitdir}/domd.service
 
     # Install domd initramfs
     install -m 0644 ${S}/core-image-tiny-initramfs-spider.cpio.gz ${D}${libdir}/xen/boot/initramfs-domd
