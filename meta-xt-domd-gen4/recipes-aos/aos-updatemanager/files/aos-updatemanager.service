@@ -6,7 +6,7 @@ Requires=var-aos-workdirs.mount var-aos-downloads.mount
 After=var-aos-workdirs.mount var-aos-downloads.mount
 StartLimitInterval=300
 StartLimitBurst=3
-ConditionPathExists=!/var/aos/.unprovisioned
+ConditionPathExists=!/var/.unprovisioned
 PartOf=aos.target
 
 [Service]
