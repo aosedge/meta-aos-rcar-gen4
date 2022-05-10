@@ -1,0 +1,11 @@
+{
+    "components": [
+        {
+            "id": "rcar-s4-spider-dom0"
+        },
+        {
+            "id": "rcar-s4-spider-domd"
+        }
+    ],
+    "formatVersion": 1
+}
