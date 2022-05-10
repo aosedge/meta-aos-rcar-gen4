@@ -11,8 +11,9 @@ xenstore-chmod $xenpath b$dom_id
 xenstore-watch $xenpath | while read event; do
     value="$(xenstore-read $xenpath)"
 
-    if [ $value -eq 2 ]; then
+    [[ $value == 2* ]] && {
         echo "Reboot request from domain: $1"
+        xl shutdown -a -w
         reboot
-    fi
+    }
 done
