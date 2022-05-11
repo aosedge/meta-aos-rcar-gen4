@@ -1,0 +1,25 @@
+* VIS fails to start from first attempt due to the following error:
+    time="2022-05-11 10:18:33.653" level=fatal msg="Can't create ws server:
+        Get \"http://localhost:8800/stats\": dial tcp [::1]:8800: connect: connection refused
+        [github.com/aoscloud/aos_vis/plugins/telemetryemulatoradapter.(*TelemetryEmulatorAdapter).getDataFromTelemetryEmulator:267]
+
+    Regardless aos-vis is started after telemetry-emulator the server is not opened. We need to start aos-vis once the
+    server port is open.
+    Probably we don't need telemetry-emulator at all.
+
+* Make recipes for domx.service to proper shutdown domains and remove WA in guestreboot.sh
+    In meta-xt-common guest domain services uses `/usr/sbin/xl destroy DomD` on stop. It makes using reboot command on
+    update dangerous because some data may no be flashed properly to the disk. It is WA'ed now in `guestreboot.sh` by
+    shuting down all guest domains before issuing reboot command. The proper fix is to shutdown domain on stop of
+    the corresponding service and to destroy the domain after timeout (`domd.service`):
+    ```
+        ExecStop=/usr/sbin/xl shutdown DomD -w
+        ExecStopPost=/usr/sbin/xl destroy DomD
+    ```
+
+* CM sometimes can't be properly stopped on reboot: "stop job is running for AOS Communication Manager (26s / 1min 30s)"
+
+* UM doesn't handle properly uboot.env file. It doesn't like 0x00 at the end. As WA fixed size is written in uboot (0x3E):
+    ```
+    setenv aos_save_vars 'env export -t ${loadaddr} aos_boot_main aos_boot_part aos_boot1_ok aos_boot2_ok; fatwrite mmc 0:3 ${loadaddr} uboot.env 0x3E'
+    ```
