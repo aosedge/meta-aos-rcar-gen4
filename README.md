@@ -185,3 +185,113 @@ setenv tftp_xen_load 'tftp 0x48080000 xen-uImage'
 setenv tftp_xenpolicy_load 'tftp 0x7c000000 xenpolicy-spider'
 
 ```
+
+# Using Aos update
+
+## Aos U-boot environment
+
+Aos OTA update requires special U-boot environment to be set:
+
+```
+# set load address
+loadaddr=0x58000000
+
+# update mmc0... vars to use ${aos_boot_slot
+setenv mmc0_dtb_load 'ext2load mmc 0:${aos_boot_slot} 0x48000000 xen.dtb; fdt addr 0x48000000; fdt resize; fdt mknode / boot_dev; fdt set /boot_dev device mmcblk0'
+setenv mmc0_initramfs_load 'ext2load mmc 0:${aos_boot_slot} 0x84000000 uInitramfs'
+setenv mmc0_kernel_load 'ext2load mmc 0:${aos_boot_slot} 0x7a000000 Image'
+setenv mmc0_xen_load 'ext2load mmc 0:${aos_boot_slot} 0x48080000 xen'
+setenv mmc0_xenpolicy_load 'ext2load mmc 0:${aos_boot_slot} 0x7c000000 xenpolicy'
+
+# load/save aos env vars
+setenv aos_default_vars 'setenv aos_boot_main 0; setenv aos_boot1_ok 1; setenv aos_boot2_ok 1; setenv aos_boot_part 0'
+setenv aos_save_vars 'env export -t ${loadaddr} aos_boot_main aos_boot_part aos_boot1_ok aos_boot2_ok; fatwrite mmc 0:3 ${loadaddr} uboot.env 0x3E'
+setenv aos_load_vars 'run aos_default_vars; if load mmc 0:3 ${loadaddr} uboot.env; then env import -t ${loadaddr} ${filesize}; else run aos_save_vars; fi'
+
+# configure boots 
+setenv aos_boot1 'if test ${aos_boot1_ok} -eq 1; then setenv aos_boot1_ok 0; setenv aos_boot2_ok 1; setenv aos_boot_part 0; setenv aos_boot_slot 1; echo "==== Boot from part 1"; run aos_save_vars; run bootcmd_mmc0; fi'
+setenv aos_boot2 'if test ${aos_boot2_ok} -eq 1; then setenv aos_boot2_ok 0; setenv aos_boot1_ok 1; setenv aos_boot_part 1; setenv aos_boot_slot 2; echo "==== Boot from part 2"; run aos_save_vars; run bootcmd_mmc0; fi'
+
+# Aos bootcmd
+setenv bootcmd_aos 'run aos_load_vars; if test ${aos_boot_main} -eq 0; then run aos_boot1; run aos_boot2; else run aos_boot2; run aos_boot1; fi'
+
+# Set bootcmd to Aos bootcmd. Note: ping command is WA to initialize network device.
+setenv bootcmd 'ping 192.168.1.100; run bootcmd_aos'
+```
+
+**Note**: ping command before run `bootcmd_aos` is WA to properly initialize the
+network device.
+
+## Flash Aos image
+
+In order to use Aos update functionality the image should be flashed into MMC.
+It could be done using the bsp image delivered together with the Aos image:
+- configure tftp U-boot variables as described above;
+- put `s4-bsp` folder content into your host tftp folder;
+- enter to the U-boot command line;
+- the following U-boot commands will run the bsp image on the target:
+
+```
+tftp 0x48000000 s4-bsp/spider.dtb
+tftp 0x48080000 s4-bsp/Image
+tftp 0x84000000 s4-bsp/Initrd
+setenv bootargs ""
+booti 0x48080000 0x84000000 0x48000000
+```
+
+- once the bsp image is booted, up network interface:
+
+```
+ifconfig tsn0 up 192.168.1.2
+```
+
+- flash the Aos image by using ssh:
+
+```
+dd if=full.img | ssh root@192.168.1.2 "dd of=/dev/mmcblk0"
+```
+
+- reboot the board.
+
+## Generate Aos update image
+
+Aos update image generation is done by dom0 yocto. The Aos image requires
+moulin build is successfully done. It means after doing any source changes,
+`ninja` build command should be issued before generating the Aos image.
+
+The following commands should be performed to generate the Aos image:
+
+```
+cd yocto/
+source poky/oe-init-build-env build-dom0/
+bitbake aos-update
+```
+
+It will generate Aos update image according to the Aos update variables set in
+roo `prod-aos-rcar-s4.yaml` file. The default image location is your top build
+folder.
+
+Aos update variables:
+- `BUNDLE_IMAGE_VERSION` - specifies image version of all components included to
+the Aos update image. Individual component version can be assigned using
+`DOM0_IMAGE_VERSION` for Dom0, `DOMD_IMAGE_VERSION` for DomD;
+- `BUNDLE_REF_VERSION` - used as default reference version for generating
+incremental component update. Individual component reference version can be
+specified using corresponding component variable: `DOMD_REF_VERSION` for DomD;
+- `BUNDLE_DOM0_TYPE`, `BUNDLE_DOMD_TYPE` - specifies component update type:
+   * `full` - full component update;
+   * `incremental` - incremental component update (currently supported only by
+DomD);
+   * if not set - the component update will not be included into the Aos update
+image.
+
+### Generating Aos update image example
+
+- perform required changes in the source;
+- change the `BUNDLE_IMAGE_VERSION`;
+- set components build type if required (`BUNDLE_DOM0_TYPE`, `BUNDLE_DOMD_TYPE`);
+- perform moulin build by issuing `ninja` build command;
+- generate Aos image update as described above.
+
+
+
