@@ -13,6 +13,7 @@ SRC_URI_append = " \
     file://rswitch.cfg \
     file://dmatest.cfg \
     file://aos.cfg \
+    file://gpio.cfg \
     file://xen-chosen.dtsi;subdir=git/arch/arm64/boot/dts/renesas \
     file://0001-clk-shmobile-Hide-clock-for-scif3-and-hscif0.patch \
     file://0001-xen-pciback-allow-compiling-on-other-archs-than-x86.patch \
