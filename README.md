@@ -275,23 +275,27 @@ Aos update variables:
 - `BUNDLE_IMAGE_VERSION` - specifies image version of all components included to
 the Aos update image. Individual component version can be assigned using
 `DOM0_IMAGE_VERSION` for Dom0, `DOMD_IMAGE_VERSION` for DomD;
+- `BUNDLE_OSTREE_REPO` - specifies path to ostree repo. ostree repo is required to generate incremental update.
+It is set to `${TOPDIR}/../../rootfs_repo` by default;
 - `BUNDLE_REF_VERSION` - used as default reference version for generating
 incremental component update. Individual component reference version can be
 specified using corresponding component variable: `DOMD_REF_VERSION` for DomD;
-- `BUNDLE_DOM0_TYPE`, `BUNDLE_DOMD_TYPE` - specifies component update type:
+- `BUNDLE_DOM0_TYPE`, `BUNDLE_DOMD_TYPE`, `BUNDLE_RH850_TYPE` - specifies component update type:
    * `full` - full component update;
    * `incremental` - incremental component update (currently supported only by
 DomD);
    * if not set - the component update will not be included into the Aos update
-image.
+image;
+   * RH850 update image is not included into the update bundle by default.
+- `RH850_IMAGE_VERSION` - version of RH850 component update;
+- `RH850_IMAGE_PATH` - path to the RH850 update image which should be included into the update bundle.
 
 ### Generating Aos update image example
 
 - perform required changes in the source;
 - change the `BUNDLE_IMAGE_VERSION`;
 - set components build type if required (`BUNDLE_DOM0_TYPE`, `BUNDLE_DOMD_TYPE`);
+- set `BUNDLE_RH850_TYPE: "full"`, `RH850_IMAGE_VERSION`, `RH850_IMAGE_PATH` if RH850 image should be included into
+the update bundle;
 - perform moulin build by issuing `ninja` build command;
 - generate Aos image update as described above.
-
-
-
