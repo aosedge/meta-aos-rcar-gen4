@@ -13,6 +13,7 @@ BUNDLE_FILE ?= "${IMAGE_BASENAME}-${XT_DOMD_MACHINE}-${BUNDLE_IMAGE_VERSION}.tar
 BUNDLE_DOM0_TYPE ?= ""
 BUNDLE_DOMD_TYPE ?= ""
 BUNDLE_DOMU_TYPE ?= ""
+BUNDLE_RH840_TYPE ?= ""
 
 BUNDLE_OSTREE_REPO ?= "${DEPLOY_DIR}/update/repo"
 
@@ -32,10 +33,12 @@ do_prepare_rootfs[cleandirs] = "${WORKDIR}/rootfs_domx"
 BUNDLE_DOM0_ID = "rcar-s4-spider-dom0"
 BUNDLE_DOMD_ID = "rcar-s4-spider-domd"
 BUNDLE_DOMU_ID = "rcar-s4-spider-domu"
+BUNDLE_RH850_ID = "rcar-s4-spider-rh850"
 
 BUNDLE_DOM0_DESC = "Dom0 image"
 BUNDLE_DOMD_DESC = "DomD image"
 BUNDLE_DOMU_DESC = "DomU image"
+BUNDLE_RH850_DESC = "RH850 image"
 
 ROOTFS_IMAGE_DIR = "${BUNDLE_WORK_DIR}"
 ROOTFS_EXCLUDE_FILES = "var/*"
@@ -43,6 +46,7 @@ ROOTFS_EXCLUDE_FILES = "var/*"
 DOM0_IMAGE_FILE = "${BUNDLE_DOM0_ID}-${BUNDLE_DOM0_TYPE}-${DOM0_IMAGE_VERSION}.gz"
 DOMD_IMAGE_FILE = "${BUNDLE_DOMD_ID}-${BUNDLE_DOMD_TYPE}-${DOMD_IMAGE_VERSION}.squashfs"
 DOMU_IMAGE_FILE = "${BUNDLE_DOMU_ID}-${BUNDLE_DOMU_TYPE}-${DOMU_IMAGE_VERSION}.squashfs"
+RH850_IMAGE_FILE = "${BUNDLE_RH850_ID}-${BUNDLE_RH850_TYPE}-${RH850_IMAGE_VERSION}.gz"
 
 DOM0_PART_SIZE = "128"
 DOM0_PART_LABEL = "boot"
@@ -87,6 +91,12 @@ python do_create_metadata() {
 
         components_metadata.append(create_component_metadata(d.getVar("BUNDLE_DOMU_ID"), d.getVar("DOMU_IMAGE_FILE"),
             d.getVar("DOMU_IMAGE_VERSION"), d.getVar("BUNDLE_DOMU_DESC"), install_dep, None, annotations))
+
+    if d.getVar("BUNDLE_RH850_TYPE") == "full":
+        components_metadata.append(create_component_metadata(d.getVar("BUNDLE_RH850_ID"), d.getVar("RH850_IMAGE_FILE"),
+            d.getVar("RH850_IMAGE_VERSION"), d.getVar("BUNDLE_RH850_DESC")))
+    elif d.getVar("BUNDLE_RH850_TYPE"):
+        bb.fatal("Wrong RH850 image type: %s" % d.getVar("BUNDLE_RH850_TYPE"))
 
     write_image_metadata(d.getVar("BUNDLE_WORK_DIR"), d.getVar("BOARD_MODEL"), components_metadata)
 }
@@ -158,6 +168,18 @@ python do_create_domu_image() {
     bb.build.exec_func("do_create_rootfs_image", d)
 }
 
+do_create_rh850_image() {
+    if [ -z ${BUNDLE_RH850_TYPE} ]; then
+        exit 0
+    fi
+
+    if [ ! -f ${RH850_IMAGE_PATH} ]; then
+        bbfatal "RH850 image ${RH850_IMAGE_PATH} not found"
+    fi
+
+    gzip < ${RH850_IMAGE_PATH} > ${BUNDLE_WORK_DIR}/${RH850_IMAGE_FILE}
+}
+ 
 python do_create_bundle() {
     if not d.getVar("BUNDLE_DOM0_TYPE") and not d.getVar("BUNDLE_DOMD_TYPE") and not d.getVar("BUNDLE_DOMU_TYPE"):
         bb.fatal("There are no componenets to add to the bundle")
@@ -166,6 +188,7 @@ python do_create_bundle() {
     bb.build.exec_func("do_create_dom0_image", d)
     bb.build.exec_func("do_create_domd_image", d)
     bb.build.exec_func("do_create_domu_image", d)
+    bb.build.exec_func("do_create_rh850_image", d)
     bb.build.exec_func("do_pack_bundle", d)
 }
 
