@@ -17,7 +17,10 @@ variables:
   # Aos variables
   BOARD_MODEL: "rcar-s4-spider;1.0"
   BUNDLE_IMAGE_VERSION: "0.1-alpha"
+  BUNDLE_OSTREE_REPO: "${TOPDIR}/../../rootfs_repo"
   BUNDLE_REF_VERSION: "0.1-alpha"
+  BUNDLE_DOM0_TYPE: "full"
+  BUNDLE_DOMD_TYPE: "full"
 common_data:
   # Sources used by all yocto-based domains
   sources: &COMMON_SOURCES
@@ -125,9 +128,9 @@ components:
 
         # Aos update config
         - ["BUNDLE_DIR", "${TOPDIR}/../../"]
-        - ["BUNDLE_OSTREE_REPO", "${TOPDIR}/../../rootfs_repo"]
-        - ["BUNDLE_DOM0_TYPE", "full"]
-        - ["BUNDLE_DOMD_TYPE", "full"]
+        - ["BUNDLE_OSTREE_REPO", "%{BUNDLE_OSTREE_REPO}"]
+        - ["BUNDLE_DOM0_TYPE", "%{BUNDLE_DOM0_TYPE}"]
+        - ["BUNDLE_DOMD_TYPE", "%{BUNDLE_DOMD_TYPE}"]
         - ["DOMD_REF_VERSION", "%{BUNDLE_REF_VERSION}"]
         - ["BUNDLE_IMAGE_VERSION", "%{BUNDLE_IMAGE_VERSION}"]
 
