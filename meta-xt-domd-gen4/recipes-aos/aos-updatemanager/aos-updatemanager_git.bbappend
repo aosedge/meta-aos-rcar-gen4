@@ -28,7 +28,6 @@ DEPENDS_append = "\
 
 RDEPENDS_${PN} = " \
     aos-rootca \
-    efibootmgr \
 "
 
 FILES_${PN} += " \
