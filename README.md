@@ -256,7 +256,7 @@ dd if=full.img | ssh root@192.168.1.2 "dd of=/dev/mmcblk0"
 ## Generate Aos update image
 
 Aos update image generation is done by dom0 yocto. The Aos image requires
-moulin build is successfully done. It means after doing any source changes,
+moulin build is successfully done. It means, after doing any source changes,
 `ninja` build command should be issued before generating the Aos image.
 
 The following commands should be performed to generate the Aos image:
@@ -268,7 +268,7 @@ bitbake aos-update
 ```
 
 It will generate Aos update image according to the Aos update variables set in
-roo `prod-aos-rcar-s4.yaml` file. The default image location is your top build
+`prod-aos-rcar-s4.yaml` file. The default image location is your top build
 folder.
 
 Aos update variables:
