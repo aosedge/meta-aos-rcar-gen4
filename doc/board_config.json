@@ -5,6 +5,9 @@
         },
         {
             "id": "rcar-s4-spider-domd"
+        },
+        {
+            "id": "rcar-s4-spider-rh850"
         }
     ],
     "formatVersion": 1

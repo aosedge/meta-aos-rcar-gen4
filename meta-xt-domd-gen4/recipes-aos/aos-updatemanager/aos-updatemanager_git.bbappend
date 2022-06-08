@@ -1,7 +1,13 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
-SRC_URI = "git://git@github.com/al1img/aos_updatemanager.git;branch=gen4_integration;protocol=ssh"
-SRCREV = "${AUTOREV}"
+RENESASOTA_IMPORT = "gitpct.epam.com/rec-inv/aos-core-rcar-gen4"
+
+SRC_URI_append = " \
+    git://git@${RENESASOTA_IMPORT}.git;branch=main;protocol=ssh;name=renesasota;destsuffix=${S}/src/${RENESASOTA_IMPORT} \
+"
+
+SRCREV_FORMAT = "renesasota"
+SRCREV_renesasota = "${AUTOREV}"
 
 SRC_URI_append = "\
     file://aos_updatemanager.cfg \
@@ -13,6 +19,8 @@ AOS_UM_UPDATE_MODULES ?= "\
     updatemodules/overlayxenstore \
     updatemodules/ubootdualpart \
 "
+
+GO_EXTLDFLAGS += "-Wl,--allow-multiple-definition"
 
 inherit systemd
 
@@ -35,6 +43,12 @@ FILES_${PN} += " \
     ${systemd_system_unitdir} \
     ${MIGRATION_SCRIPTS_PATH} \
 "
+
+do_prepare_modules_append() {
+    file="${S}/src/${GO_IMPORT}/updatemodules/modules.go"
+
+    echo 'import _ "${RENESASOTA_IMPORT}/updatemodules/renesasota"' >> ${file}
+}
 
 do_install_append() {
     install -d ${D}${sysconfdir}/aos

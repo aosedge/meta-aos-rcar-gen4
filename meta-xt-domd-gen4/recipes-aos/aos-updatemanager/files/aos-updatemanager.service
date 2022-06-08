@@ -1,7 +1,7 @@
 [Unit]
 Description=AOS Update Manager
 Wants=network-online.target aos-iamanager.service aos-communicationmanager.service
-After=network-online.target aos-iamanager.service aos-communicationmanager.service
+After=network-online.target aos-iamanager.service aos-communicationmanager.service rh850-ota-master.service
 Requires=var-aos-workdirs.mount var-aos-downloads.mount
 After=var-aos-workdirs.mount var-aos-downloads.mount
 StartLimitInterval=300
