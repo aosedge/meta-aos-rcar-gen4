@@ -92,7 +92,7 @@ python do_create_metadata() {
 }
 
 do_create_dom0_image() {
-    if [ -z ${BUNDLE_DOM0_TYPE} ] || [ ${BUNDLE_DOM0_TYPE} = "none" ]; then
+    if [ -z ${BUNDLE_DOM0_TYPE} ]; then
         exit 0
     fi
 
@@ -123,7 +123,7 @@ do_create_dom0_image() {
 }
 
 do_prepare_rootfs() {
-    if [ -z ${ROOTFS_IMAGE_TYPE} ] || [ ${ROOTFS_IMAGE_TYPE} = "none" ]; then
+    if [ -z ${ROOTFS_IMAGE_TYPE} ]; then
         exit 0
     fi
 
