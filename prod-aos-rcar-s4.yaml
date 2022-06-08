@@ -151,6 +151,8 @@ components:
         - "%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image"
       target_images:
         - "tmp/deploy/images/generic-armv8-xt/Image"
+        - "tmp/deploy/images/generic-armv8-xt/uInitramfs"
+        - "tmp/deploy/images/generic-armv8-xt/aos/version"
   domd:
     build-dir: "%{YOCTOS_WORK_DIR}"
     sources:
@@ -206,7 +208,11 @@ components:
         - "../meta-aos-rcar-gen4/meta-xt-driver-domain-gen4"
       target_images:
         - "tmp/deploy/images/%{MACHINE}/Image"
+        - "tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
+        - "tmp/deploy/images/%{MACHINE}/xenpolicy-%{MACHINE}"
+        - "tmp/deploy/images/%{MACHINE}/%{XT_XEN_DTB_NAME}"
         - "tmp/deploy/images/%{MACHINE}/rcar-image-minimal-spider.ext4"
+        - "tmp/work/%{MACHINE}-poky-linux/rcar-image-minimal/1.0-r0/rootfs/var/aos/.unprovisioned"
   domu:
     build-dir: "%{YOCTOS_WORK_DIR}"
     sources:
