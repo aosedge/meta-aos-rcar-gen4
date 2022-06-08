@@ -45,7 +45,7 @@ common_data:
       rev: master
     - type: git
       url: "git@gitpct.epam.com:rec-inv/meta-aos-rcar-gen4.git"
-      rev: v0.1-alpha
+      rev: master
   # Common configuration options for all yocto-based domains
   conf: &COMMON_CONF
     - [SSTATE_DIR, "${TOPDIR}/../../../common_data/sstate"]
