@@ -20,8 +20,6 @@ AOS_UM_UPDATE_MODULES ?= "\
     updatemodules/ubootdualpart \
 "
 
-GO_EXTLDFLAGS += "-Wl,--allow-multiple-definition"
-
 inherit systemd
 
 SYSTEMD_SERVICE_${PN} = "aos-updatemanager.service"
@@ -48,6 +46,21 @@ do_prepare_modules_append() {
     file="${S}/src/${GO_IMPORT}/updatemodules/modules.go"
 
     echo 'import _ "${RENESASOTA_IMPORT}/updatemodules/renesasota"' >> ${file}
+}
+
+do_compile() {
+    VENDOR_PACKAGES=" \
+        github.com/syucream/posix_mq \
+        github.com/aoscloud/aos_common/aostypes \
+    "
+
+    for package in $VENDOR_PACKAGES; do
+        install -d $(dirname ${S}/src/${GO_IMPORT}/vendor/${package})
+        ln -sfr ${S}/src/${GO_IMPORT}/vendor/${RENESASOTA_IMPORT}/vendor/${package} ${S}/src/${GO_IMPORT}/vendor/${package}
+    done 
+
+    cd ${S}/src/${GO_IMPORT}
+    GO111MODULE=on ${GO} build -o ${B}/bin/aos_updatemanager
 }
 
 do_install_append() {
