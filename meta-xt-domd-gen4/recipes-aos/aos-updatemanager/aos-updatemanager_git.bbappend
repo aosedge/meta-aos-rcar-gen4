@@ -61,7 +61,7 @@ do_compile() {
     done 
 
     cd ${S}/src/${GO_IMPORT}
-    GO111MODULE=on ${GO} build -o ${B}/bin/aos_updatemanager
+    GO111MODULE=on ${GO} build -o ${B}/bin/aos_updatemanager -ldflags "-X main.GitSummary=`git --git-dir=.git describe --tags --always`"
 }
 
 do_install_append() {
