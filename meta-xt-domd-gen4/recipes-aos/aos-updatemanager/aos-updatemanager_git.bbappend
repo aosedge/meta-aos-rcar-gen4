@@ -65,7 +65,7 @@ do_compile() {
 }
 
 do_install_append() {
-    install -d ${bindir}
+    install -d ${D}${bindir}
     install -m 0755 ${B}/bin/aos_updatemanager ${D}${bindir}
 
     install -d ${D}${sysconfdir}/aos
