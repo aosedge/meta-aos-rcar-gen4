@@ -97,10 +97,7 @@ common_data:
     - [IMAGE_FSTYPES_append, " ext4"]
 
     # Disable renesas optee recipes
-    - [
-        BBMASK,
-        "meta-renesas/.*/optee|meta-aos-rcar-gen4-domx/recipes-bsp/optee.*",
-      ]
+    - [BBMASK, "meta-renesas/.*/optee"]
 
 components:
   dom0:
