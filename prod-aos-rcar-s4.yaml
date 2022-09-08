@@ -155,7 +155,7 @@ components:
         - "../meta-xt-common/meta-xt-domx"
         - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-dom0"
         - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-domx"
-        - "../meta-aos-rcar-gen4/meta-xt-prod-devel-rcar-control-gen4"
+        - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-control-domain"
         - "../meta-aos"
       build_target: core-image-thin-initramfs
       external_src:
