@@ -219,7 +219,7 @@ components:
         - "../meta-xt-common/meta-xt-driver-domain"
         - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-domd"
         - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-domx"
-        - "../meta-aos-rcar-gen4/meta-xt-driver-domain-gen4"
+        - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-driver-domain"
       target_images:
         - "tmp/deploy/images/%{MACHINE}/Image"
         - "tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
