@@ -214,7 +214,7 @@ components:
         - "../meta-renesas/meta-rcar-gateway"
         - "../meta-xt-common/meta-xt-domx"
         - "../meta-xt-common/meta-xt-driver-domain"
-        - "../meta-aos-rcar-gen4/meta-xt-domd-gen4"
+        - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-domd"
         - "../meta-aos-rcar-gen4/meta-xt-domx-gen4"
         - "../meta-aos-rcar-gen4/meta-xt-driver-domain-gen4"
       target_images:
