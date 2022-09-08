@@ -97,7 +97,10 @@ common_data:
     - [IMAGE_FSTYPES_append, " ext4"]
 
     # Disable renesas optee recipes
-    - [BBMASK, "meta-renesas/.*/optee|meta-xt-domx-gen4/recipes-bsp/optee.*"]
+    - [
+        BBMASK,
+        "meta-renesas/.*/optee|meta-aos-rcar-gen4-domx/recipes-bsp/optee.*",
+      ]
 
 components:
   dom0:
@@ -151,7 +154,7 @@ components:
         - "../meta-xt-common/meta-xt-dom0"
         - "../meta-xt-common/meta-xt-domx"
         - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-dom0"
-        - "../meta-aos-rcar-gen4/meta-xt-domx-gen4"
+        - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-domx"
         - "../meta-aos-rcar-gen4/meta-xt-prod-devel-rcar-control-gen4"
         - "../meta-aos"
       build_target: core-image-thin-initramfs
@@ -215,7 +218,7 @@ components:
         - "../meta-xt-common/meta-xt-domx"
         - "../meta-xt-common/meta-xt-driver-domain"
         - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-domd"
-        - "../meta-aos-rcar-gen4/meta-xt-domx-gen4"
+        - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-domx"
         - "../meta-aos-rcar-gen4/meta-xt-driver-domain-gen4"
       target_images:
         - "tmp/deploy/images/%{MACHINE}/Image"
@@ -248,7 +251,7 @@ components:
         - "../meta-arm/meta-arm-toolchain"
         - "../meta-renesas/meta-rcar-gateway"
         - "../meta-xt-common/meta-xt-domu"
-        - "../meta-aos-rcar-gen4/meta-xt-domx-gen4"
+        - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-domx"
         - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-domu"
       build_target: rcar-image-minimal
       target_images:
