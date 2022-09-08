@@ -30,7 +30,7 @@ common_data:
   sources: &COMMON_SOURCES
     - type: git
       url: "git://git.yoctoproject.org/poky"
-      rev: 0810ac6b92
+      rev: 232b5533d
     - type: git
       url: "git://git.openembedded.org/meta-openembedded"
       rev: 814eec96c
@@ -184,6 +184,7 @@ components:
         - *DOMD_DOMU_CONF
         - [XT_DOM_NAME, "domd"]
         - [XT_DEVICE_TREES, "%{XT_DOMD_DTB_NAME} %{XT_XEN_DTB_NAME}"]
+        - [IMAGE_INSTALL_append, " iperf3"]
 
         # Initramfs configuration
         - [INITRAMFS_IMAGE, "core-image-tiny-initramfs"]
@@ -237,6 +238,7 @@ components:
         - *COMMON_CONF
         - *DOMD_DOMU_CONF
         - [XT_DOM_NAME, "domu"]
+        - [IMAGE_INSTALL_append, " iperf3 "]
 
       layers:
         - "../meta-openembedded/meta-oe"
