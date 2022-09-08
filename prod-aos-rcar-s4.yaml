@@ -150,7 +150,7 @@ components:
         - "../meta-xt-common/meta-xt-control-domain"
         - "../meta-xt-common/meta-xt-dom0"
         - "../meta-xt-common/meta-xt-domx"
-        - "../meta-aos-rcar-gen4/meta-xt-dom0-gen4"
+        - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-dom0"
         - "../meta-aos-rcar-gen4/meta-xt-domx-gen4"
         - "../meta-aos-rcar-gen4/meta-xt-prod-devel-rcar-control-gen4"
         - "../meta-aos"
