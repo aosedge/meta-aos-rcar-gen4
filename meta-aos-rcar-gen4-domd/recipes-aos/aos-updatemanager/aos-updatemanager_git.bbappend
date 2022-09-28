@@ -26,21 +26,15 @@ SYSTEMD_SERVICE_${PN} = "aos-updatemanager.service"
 
 MIGRATION_SCRIPTS_PATH = "${base_prefix}/usr/share/aos/um/migration"
 
-DEPENDS_append = "\
-    pkgconfig-native \
-    systemd \
-    efivar \
-"
-
-RDEPENDS_${PN} = " \
-    aos-rootca \
-"
-
 FILES_${PN} += " \
     ${bindir} \
     ${sysconfdir} \
     ${systemd_system_unitdir} \
     ${MIGRATION_SCRIPTS_PATH} \
+"
+
+RDEPENDS_${PN} = " \
+    aos-rootca \
 "
 
 do_prepare_modules_append() {
