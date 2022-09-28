@@ -7,7 +7,7 @@ SRC_URI_append = " \
 "
 
 SRCREV_FORMAT = "renesasota"
-SRCREV_renesasota = "${AUTOREV}"
+SRCREV_renesasota = "ca89657e61eb3eb748b7b54a263165ce4a808ceb"
 
 SRC_URI_append = "\
     file://aos_updatemanager.cfg \
