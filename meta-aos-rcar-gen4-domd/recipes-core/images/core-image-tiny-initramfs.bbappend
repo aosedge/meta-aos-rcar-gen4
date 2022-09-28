@@ -3,6 +3,7 @@ COMPATIBLE_HOST= "aarch64.*-linux"
 PACKAGE_INSTALL = " \
     initramfs-module-aosupdate \
     initramfs-module-lvm \
+    initramfs-module-machineid \
     initramfs-module-nfsrootfs \
     initramfs-module-opendisk \
     initramfs-module-rundir \
