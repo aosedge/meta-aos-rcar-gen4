@@ -16,9 +16,9 @@ variables:
   XT_DOMU_CONFIG_NAME: "domu-spider.cfg"
   # Aos variables
   BOARD_MODEL: "rcar-s4-spider;1.0"
-  BUNDLE_IMAGE_VERSION: "0.2.0"
+  BUNDLE_IMAGE_VERSION: "0.3.0"
   BUNDLE_OSTREE_REPO: "${TOPDIR}/../../rootfs_repo"
-  BUNDLE_REF_VERSION: "0.1-alpha"
+  BUNDLE_REF_VERSION: "0.2.0"
   BUNDLE_DOM0_TYPE: "full"
   BUNDLE_DOMD_TYPE: "full"
   BUNDLE_RH850_TYPE: ""
