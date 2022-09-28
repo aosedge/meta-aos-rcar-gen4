@@ -5,9 +5,6 @@ do_install_append() {
     sed -i "s/uid=65534,gid=65534/defaults/" ${D}${sysconfdir}/fstab
 
     # add Aos partitions
-    echo "# RW /var">> ${D}${sysconfdir}/fstab
-    echo "/dev/mmcblk0p5       /var                ext4 \
-        defaults,noatime       0  0" >> ${D}${sysconfdir}/fstab
     echo "# Aos partitions">> ${D}${sysconfdir}/fstab
     echo "/dev/aosvg/downloads /var/aos/downloads  ext4 \
         defaults,nofail,noatime,x-systemd.device-timeout=5s,x-systemd.after=var.mount  0  0" >> ${D}${sysconfdir}/fstab
