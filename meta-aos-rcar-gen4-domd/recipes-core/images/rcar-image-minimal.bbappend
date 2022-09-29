@@ -5,7 +5,11 @@ IMAGE_INSTALL += " \
     optee-test \
 "
 
-IMAGE_INSTALL += "iproute2 tcpdump"
+IMAGE_INSTALL += "iproute2 tcpdump nvme-cli"
+
+IMAGE_INSTALL += " kernel-module-nvme-core kernel-module-nvme"
+
+IMAGE_INSTALL += "e2fsprogs"
 
 # System compomnents
 IMAGE_INSTALL += " \
