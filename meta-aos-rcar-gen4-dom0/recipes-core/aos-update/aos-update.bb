@@ -98,7 +98,7 @@ python do_create_metadata() {
     elif d.getVar("BUNDLE_RH850_TYPE"):
         bb.fatal("Wrong RH850 image type: %s" % d.getVar("BUNDLE_RH850_TYPE"))
 
-    write_image_metadata(d.getVar("BUNDLE_WORK_DIR"), d.getVar("BOARD_MODEL"), components_metadata)
+    write_image_metadata(d.getVar("BUNDLE_WORK_DIR"), components_metadata)
 }
 
 do_create_dom0_image() {
