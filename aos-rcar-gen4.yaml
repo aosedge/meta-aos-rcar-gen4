@@ -18,9 +18,9 @@ variables:
   # Aos variables
   AOS_BOARD_MODEL: "rcar-s4-spider"
   AOS_BOARD_VERSION: "1.0"
-  AOS_BUNDLE_IMAGE_VERSION: "0.3.0"
+  AOS_BUNDLE_IMAGE_VERSION: "1.0.0"
   AOS_BUNDLE_OSTREE_REPO: "${TOPDIR}/../../rootfs_repo"
-  AOS_BUNDLE_REF_VERSION: "0.2.0"
+  AOS_BUNDLE_REF_VERSION: "0.3.0"
   AOS_BUNDLE_DOM0_TYPE: "full"
   AOS_BUNDLE_DOMD_TYPE: "full"
   AOS_BUNDLE_RH850_TYPE: ""
@@ -44,10 +44,10 @@ common_data:
       rev: "5c096848"
     - type: git
       url: "https://github.com/xen-troops/meta-xt-common.git"
-      rev: master
+      rev: "e27c46b"
     - type: git
       url: "https://github.com/aoscloud/meta-aos-rcar-gen4.git"
-      rev: "v0.3.0"
+      rev: "v1.0.0"
   # Common configuration options for all yocto-based domains
   conf: &COMMON_CONF
     - [SSTATE_DIR, "${TOPDIR}/../../../common_data/sstate"]
@@ -172,7 +172,7 @@ components:
       - *COMMON_SOURCES
       - type: git
         url: https://github.com/renesas-rcar/meta-renesas.git
-        rev: "e06327c"
+        rev: "348924c"
       - type: git
         url: git://git.yoctoproject.org/meta-selinux
         rev: "46bcf05"
@@ -181,7 +181,7 @@ components:
         rev: "c62970f"
       - type: git
         url: https://github.com/aoscloud/meta-aos.git
-        rev: "v5.2.1"
+        rev: "v6.0.2"
     builder:
       type: yocto
       work_dir: "%{DOMD_BUILD_DIR}"
@@ -241,7 +241,7 @@ components:
       - *COMMON_SOURCES
       - type: git
         url: https://github.com/renesas-rcar/meta-renesas.git
-        rev: "dunfell"
+        rev: "348924c"
     builder:
       type: yocto
       work_dir: "%{DOMU_BUILD_DIR}"
