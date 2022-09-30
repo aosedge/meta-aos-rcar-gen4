@@ -37,6 +37,21 @@ RDEPENDS_${PN} = " \
     aos-rootca \
 "
 
+python do_update_componet_ids() {
+    import json
+
+    file_name = oe.path.join(d.getVar("D"), d.getVar("sysconfdir"), "aos", "aos_updatemanager.cfg")
+
+    with open(file_name) as f:
+        data = json.load(f)
+
+    for update_module in data["UpdateModules"]:
+        update_module["ID"] = d.getVar("BOARD_MODEL")+"-"+d.getVar("BOARD_VERSION")+"-"+update_module["ID"]
+
+    with open(file_name, 'w') as f:
+        json.dump(data, f, indent=4)
+}
+
 do_prepare_modules_append() {
     file="${S}/src/${GO_IMPORT}/updatemodules/modules.go"
 
@@ -75,3 +90,5 @@ do_install_append() {
         install -m 0644 ${S}/${source_migration_path}/* ${D}${MIGRATION_SCRIPTS_PATH}
     fi
 }
+
+addtask update_componet_ids after do_install before do_package
