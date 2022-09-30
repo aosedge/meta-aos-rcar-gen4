@@ -11,12 +11,12 @@ as Moulin-based project files provide correct entries in local.conf.
 
 ## Status
 
-This is a release 0.3.0 of AosEdge development product for the
+This is a release 1.0.0 of AosEdge development product for the
 S4 Spider board.
 
-This release is based on meta-xt-prod-devel-rcar-gen4 release 0.8.4 and has the
+This release is based on meta-xt-prod-devel-rcar-gen4 release 0.8.5 and has the
 same HW features, dependencies and requirements
-(see https://github.com/xen-troops/meta-xt-prod-devel-rcar-gen4/tree/spider-0.8.4#readme).
+(see https://github.com/xen-troops/meta-xt-prod-devel-rcar-gen4/tree/spider-0.8.5#readme).
 In addition, it has the following Aos functionality:
 
 - all Aos components are hosted on DomD;
@@ -44,7 +44,7 @@ reduce possible confuse, we recommend to download only
 `aos-rcar-gen4.yaml`:
 
 ```sh
-curl -O https://raw.githubusercontent.com/aoscloud/meta-aos-rcar-gen4/v0.3.0/aos-rcar-gen4.yaml
+curl -O https://raw.githubusercontent.com/aoscloud/meta-aos-rcar-gen4/v1.0.0/aos-rcar-gen4.yaml
 ```
 
 ### Building
@@ -202,8 +202,8 @@ setenv aos_boot2 'if test ${aos_boot2_ok} -eq 1; then setenv aos_boot2_ok 0; set
 # Aos bootcmd
 setenv bootcmd_aos 'run aos_load_vars; if test ${aos_boot_main} -eq 0; then run aos_boot1; run aos_boot2; else run aos_boot2; run aos_boot1; fi'
 
-# Set bootcmd to Aos bootcmd. Note: ping command is WA to initialize network device.
-setenv bootcmd 'ping 192.168.1.100; run bootcmd_aos'
+# Set bootcmd to Aos bootcmd
+setenv bootcmd 'run bootcmd_aos'
 ```
 
 **Note**: ping command before run `bootcmd_aos` is WA to properly initialize the
@@ -261,30 +261,30 @@ folder.
 
 Aos update variables:
 
-- `BUNDLE_IMAGE_VERSION` - specifies image version of all components included to
+- `AOS_BUNDLE_IMAGE_VERSION` - specifies image version of all components included to
 the Aos update image. Individual component version can be assigned using
-`DOM0_IMAGE_VERSION` for Dom0, `DOMD_IMAGE_VERSION` for DomD;
-- `BUNDLE_OSTREE_REPO` - specifies path to ostree repo. ostree repo is required to generate incremental update.
+`AOS_DOM0_IMAGE_VERSION` for Dom0, `AOS_DOMD_IMAGE_VERSION` for DomD;
+- `AOS_BUNDLE_OSTREE_REPO` - specifies path to ostree repo. ostree repo is required to generate incremental update.
 It is set to `${TOPDIR}/../../rootfs_repo` by default;
-- `BUNDLE_REF_VERSION` - used as default reference version for generating
+- `AOS_BUNDLE_REF_VERSION` - used as default reference version for generating
 incremental component update. Individual component reference version can be
-specified using corresponding component variable: `DOMD_REF_VERSION` for DomD;
-- `BUNDLE_DOM0_TYPE`, `BUNDLE_DOMD_TYPE`, `BUNDLE_RH850_TYPE` - specifies component update type:
+specified using corresponding component variable: `AOS_DOMD_REF_VERSION` for DomD;
+- `AOS_BUNDLE_DOM0_TYPE`, `AOS_BUNDLE_DOMD_TYPE`, `AOS_BUNDLE_RH850_TYPE` - specifies component update type:
   - `full` - full component update;
   - `incremental` - incremental component update (currently supported only by
 DomD);
   - if not set - the component update will not be included into the Aos update
 image;
   - RH850 update image is not included into the update bundle by default.
-- `RH850_IMAGE_VERSION` - version of RH850 component update;
-- `RH850_IMAGE_PATH` - path to the RH850 update image which should be included into the update bundle.
+- `AOS_RH850_IMAGE_VERSION` - version of RH850 component update;
+- `AOS_RH850_IMAGE_PATH` - path to the RH850 update image which should be included into the update bundle.
 
 ### Generating Aos update image example
 
 - perform required changes in the source;
-- change the `BUNDLE_IMAGE_VERSION`;
-- set components build type if required (`BUNDLE_DOM0_TYPE`, `BUNDLE_DOMD_TYPE`);
-- set `BUNDLE_RH850_TYPE: "full"`, `RH850_IMAGE_VERSION`, `RH850_IMAGE_PATH` if RH850 image should be included into
-the update bundle;
+- change the `AOS_BUNDLE_IMAGE_VERSION`;
+- set components build type if required (`AOS_BUNDLE_DOM0_TYPE`, `AOS_BUNDLE_DOMD_TYPE`);
+- set `AOS_BUNDLE_RH850_TYPE: "full"`, `AOS_RH850_IMAGE_VERSION`, `AOS_RH850_IMAGE_PATH` if RH850 image should be
+included into the update bundle;
 - perform moulin build by issuing `ninja` build command;
 - generate Aos image update as described above.
