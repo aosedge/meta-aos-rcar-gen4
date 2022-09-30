@@ -16,7 +16,8 @@ variables:
   XT_DOMU_CONFIG_NAME: "domu-spider.cfg"
 
   # Aos variables
-  AOS_BOARD_MODEL: "rcar-s4-spider;1.0"
+  AOS_BOARD_MODEL: "rcar-s4-spider"
+  AOS_BOARD_VERSION: "1.0"
   AOS_BUNDLE_IMAGE_VERSION: "0.3.0"
   AOS_BUNDLE_OSTREE_REPO: "${TOPDIR}/../../rootfs_repo"
   AOS_BUNDLE_REF_VERSION: "0.2.0"
@@ -68,6 +69,7 @@ common_data:
 
     # Aos config
     - [BOARD_MODEL, "%{AOS_BOARD_MODEL}"]
+    - [BOARD_VERSION, "%{AOS_BOARD_VERSION}"]
     - [DOM0_IMAGE_VERSION, "%{AOS_BUNDLE_IMAGE_VERSION}"]
     - [DOMD_IMAGE_VERSION, "%{AOS_BUNDLE_IMAGE_VERSION}"]
     - [DOMU_IMAGE_VERSION, "%{AOS_BUNDLE_IMAGE_VERSION}"]

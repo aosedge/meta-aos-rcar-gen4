@@ -35,7 +35,7 @@ ROOTFS_POSTPROCESS_COMMAND_append += "set_board_model; set_rootfs_version;"
 set_board_model() {
     install -d ${IMAGE_ROOTFS}/etc/aos
 
-    echo "${BOARD_MODEL}" > ${IMAGE_ROOTFS}/etc/aos/board_model
+    echo "${BOARD_MODEL};${BOARD_VERSION}" > ${IMAGE_ROOTFS}/etc/aos/board_model
 }
 
 set_rootfs_version() {
