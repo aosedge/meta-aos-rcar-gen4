@@ -32,22 +32,22 @@ common_data:
   sources: &COMMON_SOURCES
     - type: git
       url: "git://git.yoctoproject.org/poky"
-      rev: 232b5533d
+      rev: "232b553"
     - type: git
       url: "git://git.openembedded.org/meta-openembedded"
-      rev: 814eec96c
+      rev: "814eec9"
     - type: git
       url: "git://git.yoctoproject.org/meta-virtualization"
-      rev: 180241e
+      rev: "180241e"
     - type: git
       url: "git://git.yoctoproject.org/meta-arm"
-      rev: 5c0968
+      rev: "5c096848"
     - type: git
       url: "https://github.com/xen-troops/meta-xt-common.git"
       rev: master
     - type: git
       url: "https://github.com/aoscloud/meta-aos-rcar-gen4.git"
-      rev: v0.3.0
+      rev: "v0.3.0"
   # Common configuration options for all yocto-based domains
   conf: &COMMON_CONF
     - [SSTATE_DIR, "${TOPDIR}/../../../common_data/sstate"]
@@ -172,16 +172,16 @@ components:
       - *COMMON_SOURCES
       - type: git
         url: https://github.com/renesas-rcar/meta-renesas.git
-        rev: e06327c
+        rev: "e06327c"
       - type: git
         url: git://git.yoctoproject.org/meta-selinux
-        rev: 46bcf05
+        rev: "46bcf05"
       - type: git
         url: "git://git.yoctoproject.org/meta-security"
-        rev: c62970f
+        rev: "c62970f"
       - type: git
         url: https://github.com/aoscloud/meta-aos.git
-        rev: v5.2.1
+        rev: "v5.2.1"
     builder:
       type: yocto
       work_dir: "%{DOMD_BUILD_DIR}"
@@ -241,7 +241,7 @@ components:
       - *COMMON_SOURCES
       - type: git
         url: https://github.com/renesas-rcar/meta-renesas.git
-        rev: dunfell
+        rev: "dunfell"
     builder:
       type: yocto
       work_dir: "%{DOMU_BUILD_DIR}"
