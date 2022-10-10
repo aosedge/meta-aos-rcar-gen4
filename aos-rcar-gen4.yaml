@@ -205,6 +205,7 @@ components:
 
         # Aos config
         - [AOS_RUNNER, "crun"]
+        - [VIS_DATA_PROVIDER, "%{AOS_VIS_DATA_PROVIDER}"]
 
       build_target: rcar-image-minimal
       layers:
@@ -335,3 +336,17 @@ parameters:
                 type: raw_image
                 gpt_type: 0FC63DAF-8483-4772-8E79-3D69D8477DE4 # Linux filesystem data
                 image_path: "%{YOCTOS_WORK_DIR}/%{DOMU_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/rcar-image-minimal-spider.ext4"
+
+  # Aos VIS data provider
+  VIS_DATA_PROVIDER:
+    desc: "Sepecifies plugin for VIS automotive data"
+    renesassimulator:
+      default: true
+      overrides:
+        variables:
+          AOS_VIS_DATA_PROVIDER: "renesassimulatoradapter"
+
+    telemetryemulator:
+      overrides:
+        variables:
+          AOS_VIS_DATA_PROVIDER: "telemetryemulatoradapter"

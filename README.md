@@ -55,15 +55,15 @@ parameters. You can check them with `--help-config` command
 line option:
 
 ```sh
-moulin aos-rcar-gen4.yaml --help-config
-usage: moulin aos-rcar-gen4.yaml [--ENABLE_DOMU {no,yes}]
+usage: /home/oleksandr_grytsov/.local/bin/moulin aos-rcar-gen4.yaml [--ENABLE_DOMU {no,yes}] [--VIS_DATA_PROVIDER {renesassimulator,telemetryemulator}]
 
-Config file description: Xen-Troops development setup for Renesas RCAR Gen4
-hardware
+Config file description: Xen-Troops development setup for Renesas RCAR Gen4 hardware
 
 optional arguments:
   --ENABLE_DOMU {no,yes}
                         Build generic Yocto-based DomU
+  --VIS_DATA_PROVIDER {renesassimulator,telemetryemulator}
+                        Specifies plugin for VIS automotive data
 ```
 
 Only one machine is supported as of now: `spider`. You can enable or
