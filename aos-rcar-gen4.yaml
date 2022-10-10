@@ -204,7 +204,6 @@ components:
         - ["RDEPENDS_${KERNEL_PACKAGE_NAME}-base", ""]
 
         # Aos config
-        - [AOS_RUNNER, "crun"]
         - [VIS_DATA_PROVIDER, "%{AOS_VIS_DATA_PROVIDER}"]
 
       build_target: rcar-image-minimal
