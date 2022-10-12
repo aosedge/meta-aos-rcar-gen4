@@ -43,7 +43,7 @@ will fetch this repository again into `yocto/` directory. So, to
 reduce possible confuse, we recommend to download only
 `aos-rcar-gen4.yaml`:
 
-```sh
+```bash
 curl -O https://raw.githubusercontent.com/aoscloud/meta-aos-rcar-gen4/v1.0.0/aos-rcar-gen4.yaml
 ```
 
@@ -54,7 +54,7 @@ prod-aos-rcar-s4.yaml`. This project provides number of additional
 parameters. You can check them with `--help-config` command
 line option:
 
-```sh
+```bash
 usage: /home/oleksandr_grytsov/.local/bin/moulin aos-rcar-gen4.yaml [--ENABLE_DOMU {no,yes}] [--VIS_DATA_PROVIDER {renesassimulator,telemetryemulator}]
 
 Config file description: Xen-Troops development setup for Renesas RCAR Gen4 hardware
@@ -85,14 +85,14 @@ build the images. This will take some time and disk space as it builds
 Latest versions of `moulin` will generate additional ninja targets for
 creating images. In case of this product please use
 
-```sh
+```bash
 ninja image-full
 ```
 
 To generate SD/eMMC image `full.img`. You can use `dd` tool to write
 this image file to a SD card:
 
-```sh
+```bash
 dd if=full.img of=/dev/sdX conv=sparse
 ```
 
@@ -112,7 +112,7 @@ This XT product provides only one image: `full`.
 
 You can prepare the image by running
 
-```sh
+```bash
 rouge aos-rcar-gen4.yaml --ENABLE_DOMU=yes -i full
 ```
 
@@ -120,7 +120,7 @@ This will create file `full.img` in your current directory.
 
 Also you can write image directly to an SD card by running
 
-```sh
+```bash
 sudo rouge aos-rcar-gen4.yaml --ENABLE_DOMU=yes -i full -so /dev/sdX
 ```
 
@@ -132,7 +132,7 @@ It is also possible to flash the image to the internal eMMC.
 For that you may want booting the board via TFTP and sharing DomD's
 root file system via NFS. Once booted it is possible to flash the image:
 
-```sh
+```bash
 dd if=/full.img of=/dev/mmcblk0 bs=1M
 ```
 
@@ -143,7 +143,7 @@ For more information about `rouge` check its
 
 Please make sure 'bootargs' variable is unset while running with Xen:
 
-```sh
+```bash
 unset bootargs
 ```
 
@@ -151,7 +151,7 @@ It is possible to run the build from TFTP+NFS and eMMC. With NFS boot
 is is possible to configure board IP, server IP and NFS path for DomD
 and DomU. Please set the following environment for that:
 
-```sh
+```bash
 setenv set_pcie 'i2c dev 0; i2c mw 0x6c 0x26 5; i2c mw 0x6c 0x254.2 0x1e; i2c mw 0x6c 0x258.2 0x1e; i2c mw 0x20 0x3.1 0xfe;'
 
 setenv bootcmd 'run set_pcie; run bootcmd_tftp'
@@ -179,7 +179,7 @@ setenv tftp_xenpolicy_load 'tftp 0x7c000000 xenpolicy-spider'
 
 Aos OTA update requires special U-boot environment to be set:
 
-```sh
+```bash
 # set load address
 loadaddr=0x58000000
 
@@ -219,7 +219,7 @@ It could be done using the bsp image delivered together with the Aos image:
 - enter to the U-boot command line;
 - the following U-boot commands will run the bsp image on the target:
 
-```sh
+```bash
 tftp 0x48000000 s4-bsp/spider.dtb
 tftp 0x48080000 s4-bsp/Image
 tftp 0x84000000 s4-bsp/Initrd
@@ -229,13 +229,13 @@ booti 0x48080000 0x84000000 0x48000000
 
 - once the bsp image is booted, up network interface:
 
-```sh
+```bash
 ifconfig tsn0 up 192.168.1.2
 ```
 
 - flash the Aos image by using ssh:
 
-```sh
+```bash
 dd if=full.img | ssh root@192.168.1.2 "dd of=/dev/mmcblk0"
 ```
 
@@ -249,7 +249,7 @@ moulin build is successfully done. It means, after doing any source changes,
 
 The following commands should be performed to generate the Aos image:
 
-```sh
+```bash
 cd yocto/
 source poky/oe-init-build-env build-dom0/
 bitbake aos-update
