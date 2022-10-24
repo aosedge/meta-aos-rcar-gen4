@@ -14,38 +14,40 @@ variables:
   SOC_FAMILY: "r8a779f0"
   XT_DOMD_CONFIG_NAME: "domd-spider.cfg"
   XT_DOMU_CONFIG_NAME: "domu-spider.cfg"
+
   # Aos variables
-  BOARD_MODEL: "rcar-s4-spider;1.0"
-  BUNDLE_IMAGE_VERSION: "0.3.0"
-  BUNDLE_OSTREE_REPO: "${TOPDIR}/../../rootfs_repo"
-  BUNDLE_REF_VERSION: "0.2.0"
-  BUNDLE_DOM0_TYPE: "full"
-  BUNDLE_DOMD_TYPE: "full"
-  BUNDLE_RH850_TYPE: ""
-  RH850_IMAGE_VERSION: "1.0.0"
-  RH850_IMAGE_PATH: "${TOPDIR}/../../sample_image_RH850/v1.0/OTA_AlcoholApp_Image"
+  AOS_BOARD_MODEL: "rcar-s4-spider"
+  AOS_BOARD_VERSION: "1.0"
+  AOS_BUNDLE_IMAGE_VERSION: "1.0.0"
+  AOS_BUNDLE_OSTREE_REPO: "${TOPDIR}/../../rootfs_repo"
+  AOS_BUNDLE_REF_VERSION: "0.3.0"
+  AOS_BUNDLE_DOM0_TYPE: "full"
+  AOS_BUNDLE_DOMD_TYPE: "full"
+  AOS_BUNDLE_RH850_TYPE: ""
+  AOS_RH850_IMAGE_VERSION: "1.0.0"
+  AOS_RH850_IMAGE_PATH: "${TOPDIR}/../../sample_image_RH850/v1.0/OTA_AlcoholApp_Image"
 
 common_data:
   # Sources used by all yocto-based domains
   sources: &COMMON_SOURCES
     - type: git
       url: "git://git.yoctoproject.org/poky"
-      rev: 232b5533d
+      rev: "232b553"
     - type: git
       url: "git://git.openembedded.org/meta-openembedded"
-      rev: 814eec96c
+      rev: "814eec9"
     - type: git
       url: "git://git.yoctoproject.org/meta-virtualization"
-      rev: 180241e
+      rev: "180241e"
     - type: git
       url: "git://git.yoctoproject.org/meta-arm"
-      rev: 5c0968
+      rev: "5c096848"
     - type: git
       url: "https://github.com/xen-troops/meta-xt-common.git"
-      rev: master
+      rev: "e27c46b"
     - type: git
       url: "https://github.com/aoscloud/meta-aos-rcar-gen4.git"
-      rev: v0.3.0
+      rev: "v1.0.0"
   # Common configuration options for all yocto-based domains
   conf: &COMMON_CONF
     - [SSTATE_DIR, "${TOPDIR}/../../../common_data/sstate"]
@@ -66,11 +68,12 @@ common_data:
       ]
 
     # Aos config
-    - [BOARD_MODEL, "%{BOARD_MODEL}"]
-    - [DOM0_IMAGE_VERSION, "%{BUNDLE_IMAGE_VERSION}"]
-    - [DOMD_IMAGE_VERSION, "%{BUNDLE_IMAGE_VERSION}"]
-    - [DOMU_IMAGE_VERSION, "%{BUNDLE_IMAGE_VERSION}"]
-    - [RH850_IMAGE_VERSION, "%{RH850_IMAGE_VERSION}"]
+    - [BOARD_MODEL, "%{AOS_BOARD_MODEL}"]
+    - [BOARD_VERSION, "%{AOS_BOARD_VERSION}"]
+    - [DOM0_IMAGE_VERSION, "%{AOS_BUNDLE_IMAGE_VERSION}"]
+    - [DOMD_IMAGE_VERSION, "%{AOS_BUNDLE_IMAGE_VERSION}"]
+    - [DOMU_IMAGE_VERSION, "%{AOS_BUNDLE_IMAGE_VERSION}"]
+    - [RH850_IMAGE_VERSION, "%{AOS_RH850_IMAGE_VERSION}"]
 
   # Conf options for domain that are built used renesas layer
   domd_domu_conf: &DOMD_DOMU_CONF
@@ -133,13 +136,13 @@ components:
 
         # Aos update config
         - ["BUNDLE_DIR", "${TOPDIR}/../../"]
-        - ["BUNDLE_OSTREE_REPO", "%{BUNDLE_OSTREE_REPO}"]
-        - ["BUNDLE_DOM0_TYPE", "%{BUNDLE_DOM0_TYPE}"]
-        - ["BUNDLE_DOMD_TYPE", "%{BUNDLE_DOMD_TYPE}"]
-        - ["BUNDLE_RH850_TYPE", "%{BUNDLE_RH850_TYPE}"]
-        - ["DOMD_REF_VERSION", "%{BUNDLE_REF_VERSION}"]
-        - ["BUNDLE_IMAGE_VERSION", "%{BUNDLE_IMAGE_VERSION}"]
-        - ["RH850_IMAGE_PATH", "%{RH850_IMAGE_PATH}"]
+        - ["BUNDLE_OSTREE_REPO", "%{AOS_BUNDLE_OSTREE_REPO}"]
+        - ["BUNDLE_DOM0_TYPE", "%{AOS_BUNDLE_DOM0_TYPE}"]
+        - ["BUNDLE_DOMD_TYPE", "%{AOS_BUNDLE_DOMD_TYPE}"]
+        - ["BUNDLE_RH850_TYPE", "%{AOS_BUNDLE_RH850_TYPE}"]
+        - ["DOMD_REF_VERSION", "%{AOS_BUNDLE_REF_VERSION}"]
+        - ["BUNDLE_IMAGE_VERSION", "%{AOS_BUNDLE_IMAGE_VERSION}"]
+        - ["RH850_IMAGE_PATH", "%{AOS_RH850_IMAGE_PATH}"]
 
       layers:
         - "../meta-virtualization"
@@ -169,13 +172,16 @@ components:
       - *COMMON_SOURCES
       - type: git
         url: https://github.com/renesas-rcar/meta-renesas.git
-        rev: e06327c
+        rev: "348924c"
       - type: git
         url: git://git.yoctoproject.org/meta-selinux
-        rev: 46bcf05
+        rev: "46bcf05"
+      - type: git
+        url: "git://git.yoctoproject.org/meta-security"
+        rev: "c62970f"
       - type: git
         url: https://github.com/aoscloud/meta-aos.git
-        rev: v5.2.1
+        rev: "v6.0.2"
     builder:
       type: yocto
       work_dir: "%{DOMD_BUILD_DIR}"
@@ -186,6 +192,9 @@ components:
         - [XT_DEVICE_TREES, "%{XT_DOMD_DTB_NAME} %{XT_XEN_DTB_NAME}"]
         - [IMAGE_INSTALL_append, " iperf3"]
 
+        # Enable seccomp for crun
+        - [DISTRO_FEATURES_append, " seccomp"]
+
         # Initramfs configuration
         - [INITRAMFS_IMAGE, "core-image-tiny-initramfs"]
         - [INITRAMFS_IMAGE_BUNDLE, "0"]
@@ -195,7 +204,7 @@ components:
         - ["RDEPENDS_${KERNEL_PACKAGE_NAME}-base", ""]
 
         # Aos config
-        - [AOS_RUNNER, "crun"]
+        - [VIS_DATA_PROVIDER, "%{AOS_VIS_DATA_PROVIDER}"]
 
       build_target: rcar-image-minimal
       layers:
@@ -204,8 +213,10 @@ components:
         - "../poky/meta-yocto-bsp"
         - "../meta-virtualization"
         - "../meta-selinux"
+        - "../meta-security"
         - "../meta-openembedded/meta-oe"
         - "../meta-openembedded/meta-networking"
+        - "../meta-openembedded/meta-perl"
         - "../meta-openembedded/meta-python"
         - "../meta-openembedded/meta-filesystems"
         - "../meta-arm/meta-arm"
@@ -230,7 +241,7 @@ components:
       - *COMMON_SOURCES
       - type: git
         url: https://github.com/renesas-rcar/meta-renesas.git
-        rev: dunfell
+        rev: "348924c"
     builder:
       type: yocto
       work_dir: "%{DOMU_BUILD_DIR}"
@@ -324,3 +335,17 @@ parameters:
                 type: raw_image
                 gpt_type: 0FC63DAF-8483-4772-8E79-3D69D8477DE4 # Linux filesystem data
                 image_path: "%{YOCTOS_WORK_DIR}/%{DOMU_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/rcar-image-minimal-spider.ext4"
+
+  # Aos VIS data provider
+  VIS_DATA_PROVIDER:
+    desc: "Sepecifies plugin for VIS automotive data"
+    renesassimulator:
+      default: true
+      overrides:
+        variables:
+          AOS_VIS_DATA_PROVIDER: "renesassimulatoradapter"
+
+    telemetryemulator:
+      overrides:
+        variables:
+          AOS_VIS_DATA_PROVIDER: "telemetryemulatoradapter"

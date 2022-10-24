@@ -7,7 +7,7 @@ SRC_URI_append = " \
 "
 
 SRCREV_FORMAT = "renesasota"
-SRCREV_renesasota = "ca89657e61eb3eb748b7b54a263165ce4a808ceb"
+SRCREV_renesasota = "0b701b26bc5f7b663e331a9d6ec426f28b7a01a7"
 
 SRC_URI_append = "\
     file://aos_updatemanager.cfg \
@@ -26,22 +26,31 @@ SYSTEMD_SERVICE_${PN} = "aos-updatemanager.service"
 
 MIGRATION_SCRIPTS_PATH = "${base_prefix}/usr/share/aos/um/migration"
 
-DEPENDS_append = "\
-    pkgconfig-native \
-    systemd \
-    efivar \
-"
-
-RDEPENDS_${PN} = " \
-    aos-rootca \
-"
-
 FILES_${PN} += " \
     ${bindir} \
     ${sysconfdir} \
     ${systemd_system_unitdir} \
     ${MIGRATION_SCRIPTS_PATH} \
 "
+
+RDEPENDS_${PN} = " \
+    aos-rootca \
+"
+
+python do_update_componet_ids() {
+    import json
+
+    file_name = oe.path.join(d.getVar("D"), d.getVar("sysconfdir"), "aos", "aos_updatemanager.cfg")
+
+    with open(file_name) as f:
+        data = json.load(f)
+
+    for update_module in data["UpdateModules"]:
+        update_module["ID"] = d.getVar("BOARD_MODEL")+"-"+d.getVar("BOARD_VERSION")+"-"+update_module["ID"]
+
+    with open(file_name, 'w') as f:
+        json.dump(data, f, indent=4)
+}
 
 do_prepare_modules_append() {
     file="${S}/src/${GO_IMPORT}/updatemodules/modules.go"
@@ -81,3 +90,5 @@ do_install_append() {
         install -m 0644 ${S}/${source_migration_path}/* ${D}${MIGRATION_SCRIPTS_PATH}
     fi
 }
+
+addtask update_componet_ids after do_install before do_package
