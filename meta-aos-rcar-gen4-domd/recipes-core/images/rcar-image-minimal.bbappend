@@ -5,7 +5,11 @@ IMAGE_INSTALL += " \
     optee-test \
 "
 
-IMAGE_INSTALL += "iproute2 tcpdump"
+IMAGE_INSTALL += "iproute2 tcpdump nvme-cli"
+
+IMAGE_INSTALL += " kernel-module-nvme-core kernel-module-nvme"
+
+IMAGE_INSTALL += "e2fsprogs"
 
 # System compomnents
 IMAGE_INSTALL += " \
@@ -31,7 +35,7 @@ ROOTFS_POSTPROCESS_COMMAND_append += "set_board_model; set_rootfs_version;"
 set_board_model() {
     install -d ${IMAGE_ROOTFS}/etc/aos
 
-    echo "${BOARD_MODEL}" > ${IMAGE_ROOTFS}/etc/aos/board_model
+    echo "${BOARD_MODEL};${BOARD_VERSION}" > ${IMAGE_ROOTFS}/etc/aos/board_model
 }
 
 set_rootfs_version() {

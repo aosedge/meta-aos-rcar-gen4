@@ -11,12 +11,12 @@ as Moulin-based project files provide correct entries in local.conf.
 
 ## Status
 
-This is a release 0.3.0 of AosEdge development product for the
+This is a release 1.0.0 of AosEdge development product for the
 S4 Spider board.
 
-This release is based on meta-xt-prod-devel-rcar-gen4 release 0.8.4 and has the
+This release is based on meta-xt-prod-devel-rcar-gen4 release 0.8.5 and has the
 same HW features, dependencies and requirements
-(see https://github.com/xen-troops/meta-xt-prod-devel-rcar-gen4/tree/spider-0.8.4#readme).
+(see https://github.com/xen-troops/meta-xt-prod-devel-rcar-gen4/tree/spider-0.8.5#readme).
 In addition, it has the following Aos functionality:
 
 - all Aos components are hosted on DomD;
@@ -43,8 +43,8 @@ will fetch this repository again into `yocto/` directory. So, to
 reduce possible confuse, we recommend to download only
 `aos-rcar-gen4.yaml`:
 
-```sh
-curl -O https://raw.githubusercontent.com/aoscloud/meta-aos-rcar-gen4/v0.3.0/aos-rcar-gen4.yaml
+```bash
+curl -O https://raw.githubusercontent.com/aoscloud/meta-aos-rcar-gen4/v1.0.0/aos-rcar-gen4.yaml
 ```
 
 ### Building
@@ -54,16 +54,16 @@ prod-aos-rcar-s4.yaml`. This project provides number of additional
 parameters. You can check them with `--help-config` command
 line option:
 
-```sh
-moulin aos-rcar-gen4.yaml --help-config
-usage: moulin aos-rcar-gen4.yaml [--ENABLE_DOMU {no,yes}]
+```bash
+usage: /home/oleksandr_grytsov/.local/bin/moulin aos-rcar-gen4.yaml [--ENABLE_DOMU {no,yes}] [--VIS_DATA_PROVIDER {renesassimulator,telemetryemulator}]
 
-Config file description: Xen-Troops development setup for Renesas RCAR Gen4
-hardware
+Config file description: Xen-Troops development setup for Renesas RCAR Gen4 hardware
 
 optional arguments:
   --ENABLE_DOMU {no,yes}
                         Build generic Yocto-based DomU
+  --VIS_DATA_PROVIDER {renesassimulator,telemetryemulator}
+                        Specifies plugin for VIS automotive data
 ```
 
 Only one machine is supported as of now: `spider`. You can enable or
@@ -85,14 +85,14 @@ build the images. This will take some time and disk space as it builds
 Latest versions of `moulin` will generate additional ninja targets for
 creating images. In case of this product please use
 
-```sh
+```bash
 ninja image-full
 ```
 
 To generate SD/eMMC image `full.img`. You can use `dd` tool to write
 this image file to a SD card:
 
-```sh
+```bash
 dd if=full.img of=/dev/sdX conv=sparse
 ```
 
@@ -112,7 +112,7 @@ This XT product provides only one image: `full`.
 
 You can prepare the image by running
 
-```sh
+```bash
 rouge aos-rcar-gen4.yaml --ENABLE_DOMU=yes -i full
 ```
 
@@ -120,7 +120,7 @@ This will create file `full.img` in your current directory.
 
 Also you can write image directly to an SD card by running
 
-```sh
+```bash
 sudo rouge aos-rcar-gen4.yaml --ENABLE_DOMU=yes -i full -so /dev/sdX
 ```
 
@@ -132,7 +132,7 @@ It is also possible to flash the image to the internal eMMC.
 For that you may want booting the board via TFTP and sharing DomD's
 root file system via NFS. Once booted it is possible to flash the image:
 
-```sh
+```bash
 dd if=/full.img of=/dev/mmcblk0 bs=1M
 ```
 
@@ -143,7 +143,7 @@ For more information about `rouge` check its
 
 Please make sure 'bootargs' variable is unset while running with Xen:
 
-```sh
+```bash
 unset bootargs
 ```
 
@@ -151,7 +151,7 @@ It is possible to run the build from TFTP+NFS and eMMC. With NFS boot
 is is possible to configure board IP, server IP and NFS path for DomD
 and DomU. Please set the following environment for that:
 
-```sh
+```bash
 setenv set_pcie 'i2c dev 0; i2c mw 0x6c 0x26 5; i2c mw 0x6c 0x254.2 0x1e; i2c mw 0x6c 0x258.2 0x1e; i2c mw 0x20 0x3.1 0xfe;'
 
 setenv bootcmd 'run set_pcie; run bootcmd_tftp'
@@ -179,7 +179,7 @@ setenv tftp_xenpolicy_load 'tftp 0x7c000000 xenpolicy-spider'
 
 Aos OTA update requires special U-boot environment to be set:
 
-```sh
+```bash
 # set load address
 loadaddr=0x58000000
 
@@ -202,8 +202,8 @@ setenv aos_boot2 'if test ${aos_boot2_ok} -eq 1; then setenv aos_boot2_ok 0; set
 # Aos bootcmd
 setenv bootcmd_aos 'run aos_load_vars; if test ${aos_boot_main} -eq 0; then run aos_boot1; run aos_boot2; else run aos_boot2; run aos_boot1; fi'
 
-# Set bootcmd to Aos bootcmd. Note: ping command is WA to initialize network device.
-setenv bootcmd 'ping 192.168.1.100; run bootcmd_aos'
+# Set bootcmd to Aos bootcmd
+setenv bootcmd 'run bootcmd_aos'
 ```
 
 **Note**: ping command before run `bootcmd_aos` is WA to properly initialize the
@@ -219,7 +219,7 @@ It could be done using the bsp image delivered together with the Aos image:
 - enter to the U-boot command line;
 - the following U-boot commands will run the bsp image on the target:
 
-```sh
+```bash
 tftp 0x48000000 s4-bsp/spider.dtb
 tftp 0x48080000 s4-bsp/Image
 tftp 0x84000000 s4-bsp/Initrd
@@ -229,13 +229,13 @@ booti 0x48080000 0x84000000 0x48000000
 
 - once the bsp image is booted, up network interface:
 
-```sh
+```bash
 ifconfig tsn0 up 192.168.1.2
 ```
 
 - flash the Aos image by using ssh:
 
-```sh
+```bash
 dd if=full.img | ssh root@192.168.1.2 "dd of=/dev/mmcblk0"
 ```
 
@@ -249,7 +249,7 @@ moulin build is successfully done. It means, after doing any source changes,
 
 The following commands should be performed to generate the Aos image:
 
-```sh
+```bash
 cd yocto/
 source poky/oe-init-build-env build-dom0/
 bitbake aos-update
@@ -261,30 +261,30 @@ folder.
 
 Aos update variables:
 
-- `BUNDLE_IMAGE_VERSION` - specifies image version of all components included to
+- `AOS_BUNDLE_IMAGE_VERSION` - specifies image version of all components included to
 the Aos update image. Individual component version can be assigned using
-`DOM0_IMAGE_VERSION` for Dom0, `DOMD_IMAGE_VERSION` for DomD;
-- `BUNDLE_OSTREE_REPO` - specifies path to ostree repo. ostree repo is required to generate incremental update.
+`AOS_DOM0_IMAGE_VERSION` for Dom0, `AOS_DOMD_IMAGE_VERSION` for DomD;
+- `AOS_BUNDLE_OSTREE_REPO` - specifies path to ostree repo. ostree repo is required to generate incremental update.
 It is set to `${TOPDIR}/../../rootfs_repo` by default;
-- `BUNDLE_REF_VERSION` - used as default reference version for generating
+- `AOS_BUNDLE_REF_VERSION` - used as default reference version for generating
 incremental component update. Individual component reference version can be
-specified using corresponding component variable: `DOMD_REF_VERSION` for DomD;
-- `BUNDLE_DOM0_TYPE`, `BUNDLE_DOMD_TYPE`, `BUNDLE_RH850_TYPE` - specifies component update type:
+specified using corresponding component variable: `AOS_DOMD_REF_VERSION` for DomD;
+- `AOS_BUNDLE_DOM0_TYPE`, `AOS_BUNDLE_DOMD_TYPE`, `AOS_BUNDLE_RH850_TYPE` - specifies component update type:
   - `full` - full component update;
   - `incremental` - incremental component update (currently supported only by
 DomD);
   - if not set - the component update will not be included into the Aos update
 image;
   - RH850 update image is not included into the update bundle by default.
-- `RH850_IMAGE_VERSION` - version of RH850 component update;
-- `RH850_IMAGE_PATH` - path to the RH850 update image which should be included into the update bundle.
+- `AOS_RH850_IMAGE_VERSION` - version of RH850 component update;
+- `AOS_RH850_IMAGE_PATH` - path to the RH850 update image which should be included into the update bundle.
 
 ### Generating Aos update image example
 
 - perform required changes in the source;
-- change the `BUNDLE_IMAGE_VERSION`;
-- set components build type if required (`BUNDLE_DOM0_TYPE`, `BUNDLE_DOMD_TYPE`);
-- set `BUNDLE_RH850_TYPE: "full"`, `RH850_IMAGE_VERSION`, `RH850_IMAGE_PATH` if RH850 image should be included into
-the update bundle;
+- change the `AOS_BUNDLE_IMAGE_VERSION`;
+- set components build type if required (`AOS_BUNDLE_DOM0_TYPE`, `AOS_BUNDLE_DOMD_TYPE`);
+- set `AOS_BUNDLE_RH850_TYPE: "full"`, `AOS_RH850_IMAGE_VERSION`, `AOS_RH850_IMAGE_PATH` if RH850 image should be
+included into the update bundle;
 - perform moulin build by issuing `ninja` build command;
 - generate Aos image update as described above.

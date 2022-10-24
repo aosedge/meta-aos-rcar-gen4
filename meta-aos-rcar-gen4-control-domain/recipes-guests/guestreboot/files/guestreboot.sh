@@ -13,7 +13,6 @@ xenstore-watch $xenpath | while read event; do
 
     [[ $value == 2* ]] && {
         echo "Reboot request from domain: $1"
-        xl shutdown -a -w
         reboot
     }
 done

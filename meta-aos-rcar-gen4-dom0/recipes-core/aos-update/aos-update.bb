@@ -8,7 +8,7 @@ inherit metadata-generator bundle-generator rootfs-image-generator
 # Variables
 
 BUNDLE_DIR ?= "${DEPLOY_DIR}/update"
-BUNDLE_FILE ?= "${IMAGE_BASENAME}-${XT_DOMD_MACHINE}-${BUNDLE_IMAGE_VERSION}.tar"
+BUNDLE_FILE ?= "${IMAGE_BASENAME}-${BOARD_MODEL}-${BOARD_VERSION}_${BUNDLE_IMAGE_VERSION}.tar"
 
 BUNDLE_DOM0_TYPE ?= ""
 BUNDLE_DOMD_TYPE ?= ""
@@ -30,10 +30,10 @@ do_prepare_rootfs[cleandirs] = "${WORKDIR}/rootfs_domx"
 
 # Configuration
 
-BUNDLE_DOM0_ID = "rcar-s4-spider-dom0"
-BUNDLE_DOMD_ID = "rcar-s4-spider-domd"
-BUNDLE_DOMU_ID = "rcar-s4-spider-domu"
-BUNDLE_RH850_ID = "rcar-s4-spider-rh850"
+BUNDLE_DOM0_ID = "${BOARD_MODEL}-${BOARD_VERSION}-dom0"
+BUNDLE_DOMD_ID = "${BOARD_MODEL}-${BOARD_VERSION}-domd"
+BUNDLE_DOMU_ID = "${BOARD_MODEL}-${BOARD_VERSION}-domu"
+BUNDLE_RH850_ID = "${BOARD_MODEL}-${BOARD_VERSION}-rh850"
 
 BUNDLE_DOM0_DESC = "Dom0 image"
 BUNDLE_DOMD_DESC = "DomD image"
@@ -98,7 +98,7 @@ python do_create_metadata() {
     elif d.getVar("BUNDLE_RH850_TYPE"):
         bb.fatal("Wrong RH850 image type: %s" % d.getVar("BUNDLE_RH850_TYPE"))
 
-    write_image_metadata(d.getVar("BUNDLE_WORK_DIR"), d.getVar("BOARD_MODEL"), components_metadata)
+    write_image_metadata(d.getVar("BUNDLE_WORK_DIR"), components_metadata)
 }
 
 do_create_dom0_image() {
