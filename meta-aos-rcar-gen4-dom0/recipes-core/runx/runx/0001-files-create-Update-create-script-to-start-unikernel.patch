@@ -1,0 +1,120 @@
+From 37c8fc8f16318cb6a38f971c62c0eb66bdc37a8b Mon Sep 17 00:00:00 2001
+Message-Id: <37c8fc8f16318cb6a38f971c62c0eb66bdc37a8b.1671222770.git.oleksii_moisieiev@epam.com>
+From: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+Date: Mon, 28 Nov 2022 12:17:23 +0200
+Subject: [PATCH] files/create: Update create script to start unikernels
+
+Updated format of the create script, which allows set set following parameter:
+1) set pvcalls format
+2) set cni configuarion
+3) set memory configuration
+4) set cpu configuration
+
+Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+---
+ files/create | 58 +++++++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 46 insertions(+), 12 deletions(-)
+
+diff --git a/files/create b/files/create
+index 0dcae76..92021df 100755
+--- a/files/create
++++ b/files/create
+@@ -12,8 +12,14 @@ appname=`cat $configfile | jq '.["Path"]'`
+ cmdline=\"`cat $configfile | jq  -c -r '.["process"]["args"] | join("\" \"")'`\"
+ env=`cat $configfile | jq  -c -r '.["process"]["env"] | join("\" \"")'`
+ xlconf=""
++vcpus=`cat $configfile | jq -c -r '.["linux"]["resources"]["vcpus"]["count"]'`
++memory=`cat $configfile | jq -c -r '.["linux"]["resources"]["memory"]["limit"]'`
++disk=`cat $configfile | jq -c -r '.["disk"]["path"]'`
+ kernel="$workpath/kernel"
+ ramdisk="$workpath/initrd"
++extra_cmd=""
++network_cfg=""
++pvcalls_cfg="backend=0"
+ for i in $env
+ do
+     i=$(echo $i | tr -d \")
+@@ -34,7 +40,20 @@ do
+     if [[ $i = RUNX_RAMDISK=* ]]
+     then
+         ramdisk=${i#RUNX_RAMDISK=}
+-        ramdisk="$mountpoint"/"$ramdisk"
++        [ -z $ramdisk ] ||
++            ramdisk="$mountpoint"/"$ramdisk"
++    fi
++    if [[ $i = EXTRA=* ]]
++    then
++        extra_cmd="${extra_cmd} ${i#EXTRA=}"
++    fi
++    if [[ $i = NETWORK_CFG=* ]]
++    then
++        network_cfg="${i#NETWORK_CFG=}, "
++    fi
++    if [[ $i = PVCALLS_CFG=* ]]
++    then
++       pvcalls_cfg="${i#PVCALLS_CFG=}"
+     fi
+ done
+ 
+@@ -46,6 +65,7 @@ then
+     netfile=`echo "$netconf" | awk -F "," '{print $1}'`
+     netname=`echo "$netconf" | awk -F "," '{print $2}'`
+     netaddr=`echo "$netconf" | awk -F "," '{print $3}'`
++    netmask=`echo "$netconf" | awk -F "," '{print $4}'`
+     nettype=`cat $netfile | jq -c -r "select(.[\"name\"] == \"$netname\") | .[\"type\"]"`
+ 
+     if test "$nettype" = "bridge"
+@@ -70,25 +90,39 @@ if test "$ramdisk"
+ then
+     echo "ramdisk='$ramdisk'" >> $outconfig
+ fi
+-echo "memory = 1024" >> $outconfig
+-echo "vcpus = 2" >> $outconfig
++echo "memory = $memory" >> $outconfig
++echo "vcpus = $vcpus" >> $outconfig
+ echo "serial='pty'" >> $outconfig
+ echo "boot='c'" >> $outconfig
+ if test $pvcalls -eq 0
+ then
+-    echo "vif=['bridge="$bridge"']" >> $outconfig
+-    if test "$netaddr"
+-    then
+-        echo extra=\'console=hvc0 root=9p rdinit=/bin/init ip=$netaddr gw=$gw route=$route\' >> $outconfig
++    ipconfig=""
++    if test "$netaddr"; then
++        ipconfig="$netaddr"
++        if test "$netmask"; then
++        ipconfig="$ipconfig $netmask"
++        fi
++        if test "gw"; then
++            ipconfig="$ipconfig $gw"
++        fi
++
++        echo "vif=['${network_cfg}bridge=${bridge}, ip=${ipconfig}']" >> $outconfig
++        echo extra=\'console=hvc0 ip=$netaddr gw=$gw route=${route}${extra_cmd}\' >> $outconfig
+     else
+-        echo extra=\'console=hvc0 root=9p rdinit=/bin/init ip=dhcp\' >> $outconfig
++        echo "vif=['${network_cfg}bridge=${bridge}, ip=dhcp']" >> $outconfig
++        echo extra=\'console=hvc0 ip=dhcp${extra_cmd}\' >> $outconfig
+     fi
+ else
+-    echo "pvcalls=['']" >> $outconfig
+-    echo extra=\'console=hvc0 root=9p rdinit=/bin/init pvcalls=1\' >> $outconfig
++    echo "pvcalls=['${pvcalls_cfg}']" >> $outconfig
++    echo extra=\'console=hvc0 pvcalls=1${extra_cmd}\' >> $outconfig
++fi
++if test "$disk"; then
++    if [[ $disk != null ]]; then
++        echo "disk= [ 'format=raw, vdev=xvda, access=rw, target=$disk' ]" >> $outconfig
++    fi
+ fi
+-echo "vfb=['vnc=1']" >> $outconfig
+-echo "p9=[ 'tag=share_dir,security_model=none,path=$mountpoint' ]" >> $outconfig
++#echo "vfb=['vnc=1']" >> $outconfig
++#echo "p9=[ 'tag=share_dir,security_model=none,path=$mountpoint' ]" >> $outconfig
+ echo "name=\"$containerid\"" >> $outconfig
+ if test -f "$xlconf"
+ then
+-- 
+2.25.1
+

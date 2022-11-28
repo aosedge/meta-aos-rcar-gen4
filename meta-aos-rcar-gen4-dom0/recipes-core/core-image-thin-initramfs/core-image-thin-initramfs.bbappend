@@ -7,6 +7,7 @@ generate_uboot_image() {
     ln -sfr  ${IMGDEPLOYDIR}/${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.cpio.gz.uInitramfs ${DEPLOY_DIR_IMAGE}/uInitramfs
 }
 
+IMAGE_INSTALL_append = " runx"
 
 set_image_version() {
     install -d ${DEPLOY_DIR_IMAGE}/aos
