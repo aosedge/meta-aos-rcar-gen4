@@ -192,6 +192,8 @@ components:
         - [XT_DEVICE_TREES, "%{XT_DOMD_DTB_NAME} %{XT_XEN_DTB_NAME}"]
         - [IMAGE_INSTALL_append, " iperf3"]
         - [IMAGE_INSTALL_append, " snort"]
+        - [IMAGE_INSTALL_append, " iproute2"]
+        - [IMAGE_INSTALL_append, " iproute2-tc"]
 
         # Enable seccomp for crun
         - [DISTRO_FEATURES_append, " seccomp"]
