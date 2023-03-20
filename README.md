@@ -14,9 +14,9 @@ as Moulin-based project files provide correct entries in local.conf.
 This is a release 1.0.0 of AosEdge development product for the
 S4 Spider board.
 
-This release is based on meta-xt-prod-devel-rcar-gen4 release 0.8.5 and has the
+This release is based on meta-xt-prod-devel-rcar-gen4 release 1.0 and has the
 same HW features, dependencies and requirements
-(see https://github.com/xen-troops/meta-xt-prod-devel-rcar-gen4/tree/spider-0.8.5#readme).
+(see https://github.com/xen-troops/meta-xt-prod-devel-rcar-gen4/tree/spider-1.0#readme).
 In addition, it has the following Aos functionality:
 
 - all Aos components are hosted on DomD;
