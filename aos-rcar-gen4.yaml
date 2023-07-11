@@ -150,6 +150,11 @@ components:
 
         - [EXTRA_IMAGEDEPENDS_append, " boot-script"]
 
+        # Aos initramfs configuration
+        - [INITRAMFS_IMAGE, "aos-image-initramfs"]
+        - [INITRAMFS_IMAGE_BUNDLE, "0"]
+        - [INITRAMFS_FSTYPES, "cpio.gz"]
+
       build_target: rcar-image-minimal
       layers:
         - "../poky/meta"
