@@ -30,6 +30,9 @@ common_data:
       url: git://git.yoctoproject.org/meta-selinux
       rev: "46bcf05"
     - type: git
+      url: "git://git.yoctoproject.org/meta-security"
+      rev: "c62970f"
+    - type: git
       url: https://github.com/renesas-rcar/meta-renesas.git
       rev: "7c29e7bdae360a86fa77ef561e01cc0c18d2e01f"
     - type: git
@@ -139,11 +142,13 @@ components:
         - "../poky/meta-poky"
         - "../poky/meta-yocto-bsp"
         - "../meta-virtualization"
-        - "../meta-selinux"
         - "../meta-openembedded/meta-oe"
         - "../meta-openembedded/meta-networking"
+        - "../meta-openembedded/meta-perl"
         - "../meta-openembedded/meta-python"
         - "../meta-openembedded/meta-filesystems"
+        - "../meta-security"
+        - "../meta-selinux"
         - "../meta-renesas/meta-rcar-gateway"
         - "../meta-xt-common/meta-xt-domx"
         - "../meta-xt-common/meta-xt-driver-domain"
