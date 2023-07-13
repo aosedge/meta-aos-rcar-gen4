@@ -39,6 +39,9 @@ common_data:
       url: "https://github.com/xen-troops/meta-xt-prod-devel-rcar-gen4.git"
       rev: "spider-1.0"
     - type: git
+      url: "https://github.com/aoscloud/meta-aos"
+      rev: "v7.2.0"
+    - type: git
       url: "https://github.com/aoscloud/meta-aos-rcar-gen4.git"
       rev: "v2.0.0"
 
@@ -147,6 +150,7 @@ components:
         - "../meta-xt-prod-devel-rcar-gen4/meta-xt-domd-gen4"
         - "../meta-xt-prod-devel-rcar-gen4/meta-xt-domx-gen4"
         - "../meta-xt-prod-devel-rcar-gen4/meta-xt-driver-domain-gen4"
+        - "../meta-aos"
         - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-domd"
 
       target_images:
