@@ -34,22 +34,22 @@ common_data:
       rev: "7c29e7bdae360a86fa77ef561e01cc0c18d2e01f"
     - type: git
       url: "https://github.com/xen-troops/meta-xt-common.git"
-      rev: "1f6981217e97356acee16370b660eed2be722553"
+      rev: "dunfell"
     - type: git
       url: "https://github.com/xen-troops/meta-xt-prod-devel-rcar-gen4.git"
-      rev: "spider-1.0"
+      rev: "master"
     - type: git
       url: "https://github.com/aoscloud/meta-aos"
-      rev: "v7.2.0"
+      rev: "develop"
     - type: git
       url: "https://github.com/aoscloud/meta-aos-rcar-gen4.git"
-      rev: "v2.0.0"
+      rev: "develop"
 
   # Zephyr sources
   zephyr_sources: &ZEPHYR_SOURCES
     - type: west
       url: "https://github.com/aoscloud/aos_core_zephyr.git"
-      rev: "v0.2.0"
+      rev: "develop"
 
   # Common configuration options for all yocto-based domains
   conf: &COMMON_CONF
