@@ -67,7 +67,7 @@ common_data:
 
     # Remove features that we are not using
     - [
-        DISTRO_FEATURES_remove,
+        DISTRO_FEATURES:remove,
         "x11 gtk gobject-introspection-data wifi nfc
         bluetooth irda zeroconf 3g sysvinit acl alsa argp pcmcia usbgadget
         usbhost opengl ptest multiarch wayland vulkan sysvinit",
@@ -115,21 +115,21 @@ components:
         - [INIT_MANAGER, "systemd"]
 
         # add the static lib to SDK toolchain
-        - [SDKIMAGE_FEATURES_append, " staticdev-pkgs"]
+        - [SDKIMAGE_FEATURES:append, " staticdev-pkgs"]
 
         # Add for gstreamer plugins ugly
         - [LICENSE_FLAGS_WHITELIST, "commercial"]
 
         # Add Capacity Aware migration Strategy (CAS)
-        - [MACHINE_FEATURES_append, " cas"]
+        - [MACHINE_FEATURES:append, " cas"]
 
         # Remove ptest to reduce the build time
-        - [DISTRO_FEATURES_remove, "ptest"]
+        - [DISTRO_FEATURES:remove, "ptest"]
 
         # Generate ext4 image files
-        - [IMAGE_FSTYPES_append, " ext4"]
+        - [IMAGE_FSTYPES:append, " ext4"]
 
-        - [EXTRA_IMAGEDEPENDS_append, " boot-script"]
+        - [EXTRA_IMAGEDEPENDS:append, " boot-script"]
 
         # Aos initramfs configuration
         - [INITRAMFS_IMAGE, "aos-image-initramfs"]
