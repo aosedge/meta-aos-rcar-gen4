@@ -39,14 +39,14 @@ common_data:
       url: "https://github.com/xen-troops/meta-xt-common.git"
       rev: "dunfell"
     - type: git
-      url: "https://github.com/xen-troops/meta-xt-rcar.git"
-      rev: "dunfell"
+      url: "https://github.com/rshym/meta-xt-rcar.git"
+      rev: "mr_gateway"
     - type: git
       url: "https://github.com/aoscloud/meta-aos"
       rev: "develop"
     - type: git
-      url: "https://github.com/aoscloud/meta-aos-rcar-gen4.git"
-      rev: "develop"
+      url: "https://github.com/rshym/meta-aos-rcar-gen4.git"
+      rev: "mr_lowlevel"
 
   # Zephyr sources
   zephyr_sources: &ZEPHYR_SOURCES
