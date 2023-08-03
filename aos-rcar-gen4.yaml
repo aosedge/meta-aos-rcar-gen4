@@ -39,8 +39,8 @@ common_data:
       url: "https://github.com/xen-troops/meta-xt-common.git"
       rev: "dunfell"
     - type: git
-      url: "https://github.com/xen-troops/meta-xt-prod-devel-rcar-gen4.git"
-      rev: "master"
+      url: "https://github.com/xen-troops/meta-xt-rcar.git"
+      rev: "dunfell"
     - type: git
       url: "https://github.com/aoscloud/meta-aos"
       rev: "develop"
@@ -152,9 +152,8 @@ components:
         - "../meta-renesas/meta-rcar-gateway"
         - "../meta-xt-common/meta-xt-domx"
         - "../meta-xt-common/meta-xt-driver-domain"
-        - "../meta-xt-prod-devel-rcar-gen4/meta-xt-domd-gen4"
-        - "../meta-xt-prod-devel-rcar-gen4/meta-xt-domx-gen4"
-        - "../meta-xt-prod-devel-rcar-gen4/meta-xt-driver-domain-gen4"
+        - "../meta-xt-rcar/meta-xt-gateway/meta-xt-domd-gen4"
+        - "../meta-xt-rcar/meta-xt-gateway/meta-xt-domx-gen4"
         - "../meta-aos"
         - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-domd"
 
