@@ -40,7 +40,7 @@ common_data:
       rev: "dunfell"
     - type: git
       url: "https://github.com/rshym/meta-xt-rcar.git"
-      rev: "mr_gateway"
+      rev: "mr_overrides"
     - type: git
       url: "https://github.com/aoscloud/meta-aos"
       rev: "develop"
