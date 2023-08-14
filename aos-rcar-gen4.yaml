@@ -189,6 +189,7 @@ components:
 images:
   full:
     type: gpt
+    sector_size: 4096
     desc: "Full SD-card/eMMC image"
     partitions:
       boot:
