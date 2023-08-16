@@ -24,7 +24,7 @@ IMAGE_INSTALL += " \
 
 # Aos components
 IMAGE_INSTALL += " \
-    ${@bb.utils.contains('GEN4_DOM0_OS', 'zephyr', 'aos-messageproxy ', '', d)} \
+    ${@bb.utils.contains('DOM0_OS', 'zephyr', 'aos-messageproxy ', '', d)} \
 "
 
 AOS_ROOTFS_IMAGE_VERSION = "${AOS_DOMD_IMAGE_VERSION}"

@@ -12,7 +12,7 @@ variables:
   UNIT_MODEL: "rcar-gen4-zephyr"
   UNIT_VERSION: "1.0"
 
-  GEN4_DOM0_OS: "zephyr"
+  DOM0_OS: "zephyr"
 
   # Aos FOTA configuration
 
@@ -22,49 +22,49 @@ variables:
   BUNDLE_DOMD_TYPE: "full"
   BUNDLE_RH850_TYPE: ""
   RH850_IMAGE_VERSION: "1.0.0"
-  RH850_IMAGE_PATH: "${TOPDIR}/../../../../sample_image_RH850/v1.0/OTA_AlcoholApp_Image"
+  RH850_IMAGE_PATH: "${TOPDIR}/../../sample_image_RH850/v1.0/OTA_AlcoholApp_Image"
 
   # Aos node configuration
 
-  GEN4_DOMD_NODE_ID: "gen4-domd"
-  GEN4_DOM0_NODE_ID: "gen4-dom0"
-  GEN4_DOM0_NODE_TYPE: "zephyr-%{GEN4_DOM0_NODE_ID}"
-  GEN4_DOMD_NODE_TYPE: "zephyr-%{GEN4_DOMD_NODE_ID}"
+  DOMD_NODE_ID: "domd"
+  DOM0_NODE_ID: "dom0"
+  DOM0_NODE_TYPE: "zephyr-%{DOM0_NODE_ID}"
+  DOMD_NODE_TYPE: "zephyr-%{DOMD_NODE_ID}"
 
-  UM_NODES: "%{GEN4_DOMD_NODE_ID}"
-  SM_NODES: "%{GEN4_DOM0_NODE_ID}"
-  IAM_NODES: "%{GEN4_DOM0_NODE_ID}"
-  IAM_HOSTNAMES: "%{GEN4_DOM0_HOST_NAME}.%{GEN4_DOMAIN_NAME}"
+  UM_NODES: "%{DOMD_NODE_ID}"
+  SM_NODES: "%{DOM0_NODE_ID}"
+  IAM_NODES: "%{DOM0_NODE_ID}"
+  IAM_HOSTNAMES: "%{DOM0_HOST_NAME}.%{DOMAIN_NAME}"
 
   # Network configuration
 
-  GEN4_DOMAIN_NAME: "gen4"
-  GEN4_DOM0_HOST_NAME: "dom0"
-  GEN4_DOMD_HOST_NAME: "domd"
-  GEN4_DHCP_NET: "10.0.1"
-  GEN4_DOM0_IP: "10.0.1.2"
-  GEN4_DOMD_IP: "10.0.1.1"
+  DOMAIN_NAME: "gen4"
+  DOM0_HOST_NAME: "dom0"
+  DOMD_HOST_NAME: "domd"
+  DHCP_NET: "10.0.1"
+  DOM0_IP: "10.0.1.2"
+  DOMD_IP: "10.0.1.1"
 
   # Gen4 build configuration
 
-  GEN4_MACHINE: "spider"
-  GEN4_SOC_FAMILY: "r8a779f0"
-  GEN4_ZEPHYR_DOM0_MACHINE: "rcar_spider"
+  MACHINE: "spider"
+  SOC_FAMILY: "r8a779f0"
+  ZEPHYR_DOM0_MACHINE: "rcar_spider"
 
-  GEN4_DOM0_BUILD_DIR: "build/gen4/dom0"
-  GEN4_DOMD_BUILD_DIR: "build/gen4/domd"
-  GEN4_ZEPHYR_DOM0_DIR: "zephyr/gen4-dom0"
+  DOM0_BUILD_DIR: "build-dom0"
+  DOMD_BUILD_DIR: "build-domd"
+  ZEPHYR_DOM0_DIR: "zephyr/dom0"
 
-  GEN4_XT_DOMD_DTB_NAME: "%{GEN4_SOC_FAMILY}-%{GEN4_MACHINE}-domd.dtb"
-  GEN4_XT_XEN_DTB_NAME: "%{GEN4_SOC_FAMILY}-%{GEN4_MACHINE}-xen.dtb"
-  GEN4_XT_DOMD_CONFIG_NAME: "domd-spider.cfg"
+  XT_DOMD_DTB_NAME: "%{SOC_FAMILY}-%{MACHINE}-domd.dtb"
+  XT_XEN_DTB_NAME: "%{SOC_FAMILY}-%{MACHINE}-xen.dtb"
+  XT_DOMD_CONFIG_NAME: "domd-%{MACHINE}.cfg"
 
-  GEN4_XT_OPTEE_FLAVOR: "spider_s4"
+  XT_OPTEE_FLAVOR: "spider_s4"
 
-  GEN4_XT_KERNEL_BRANCH: "v5.10.41/rcar-5.1.7.rc6-xt"
-  GEN4_XT_KERNEL_REV: f5bb327b43cc6248cde9f3baf18e64257be8bc02
+  XT_KERNEL_BRANCH: "v5.10.41/rcar-5.1.7.rc6-xt"
+  XT_KERNEL_REV: f5bb327b43cc6248cde9f3baf18e64257be8bc02
 
-  GEN4_XT_DOMD_IMAGE: "rcar-image-minimal"
+  XT_DOMD_IMAGE: "rcar-image-minimal"
 
 common_data:
   # Sources used by all domains
@@ -105,8 +105,8 @@ common_data:
 
   # Common configuration options for all yocto-based domains
   common_conf: &COMMON_CONF
-    - [SSTATE_DIR, "${TOPDIR}/../../../../../common_data/sstate"]
-    - [DL_DIR, "${TOPDIR}/../../../../../common_data/downloads"]
+    - [SSTATE_DIR, "${TOPDIR}/../../../common_data/sstate"]
+    - [DL_DIR, "${TOPDIR}/../../../common_data/downloads"]
 
     # Skip warning about missing "virtualization" distro feature
     - [SKIP_META_VIRT_SANITY_CHECK, "1"]
@@ -131,8 +131,8 @@ common_data:
     # Aos configuration
     - [AOS_UNIT_MODEL, "%{UNIT_MODEL}"]
     - [AOS_UNIT_VERSION, "%{UNIT_VERSION}"]
-    - [AOS_MAIN_NODE_ID, "%{GEN4_DOMD_NODE_ID}"]
-    - [AOS_MAIN_NODE_HOSTNAME, "%{GEN4_DOMD_HOST_NAME}.%{GEN4_DOMAIN_NAME}"]
+    - [AOS_MAIN_NODE_ID, "%{DOMD_NODE_ID}"]
+    - [AOS_MAIN_NODE_HOSTNAME, "%{DOMD_HOST_NAME}.%{DOMAIN_NAME}"]
     - [AOS_DOM0_IMAGE_VERSION, "%{BUNDLE_IMAGE_VERSION}"]
     - [AOS_DOMD_IMAGE_VERSION, "%{BUNDLE_IMAGE_VERSION}"]
 
@@ -144,8 +144,8 @@ common_data:
     # Aos configuration
     - [AOS_RUNNER, "runx"]
 
-    - [AOS_BUNDLE_DIR, "${TOPDIR}/../../../.."]
-    - [AOS_BUNDLE_OSTREE_REPO, "${TOPDIR}/../../../../rootfs_repo"]
+    - [AOS_BUNDLE_DIR, "${TOPDIR}/../.."]
+    - [AOS_BUNDLE_OSTREE_REPO, "${TOPDIR}/../../rootfs_repo"]
     - [AOS_BUNDLE_IMAGE_VERSION, "%{BUNDLE_IMAGE_VERSION}"]
     - [AOS_BUNDLE_DOM0_TYPE, "%{BUNDLE_DOM0_TYPE}"]
     - [AOS_BUNDLE_DOMD_TYPE, "%{BUNDLE_DOMD_TYPE}"]
@@ -173,28 +173,28 @@ common_data:
     - [IMAGE_FSTYPES_append, " ext4"]
 
 components:
-  gen4-dom0:
+  dom0:
     default: true
-    build-dir: "%{GEN4_ZEPHYR_DOM0_DIR}"
+    build-dir: "%{ZEPHYR_DOM0_DIR}"
     sources:
       - *ZEPHYR_SOURCES
 
     builder:
       type: zephyr
-      board: "%{GEN4_ZEPHYR_DOM0_MACHINE}"
+      board: "%{ZEPHYR_DOM0_MACHINE}"
       target: aos_core_zephyr
       work_dir: build
       vars:
-        - "CONFIG_AOS_NODE_ID=\\\\\\\"%{GEN4_DOM0_NODE_ID}\\\\\\\""
-        - "CONFIG_AOS_NODE_TYPE=\\\\\\\"%{GEN4_DOM0_NODE_TYPE}\\\\\\\""
+        - "CONFIG_AOS_NODE_ID=\\\\\\\"%{DOM0_NODE_ID}\\\\\\\""
+        - "CONFIG_AOS_NODE_TYPE=\\\\\\\"%{DOM0_NODE_TYPE}\\\\\\\""
       shields:
         - "xen_dom0"
       additional_deps:
-        - "%{YOCTOS_WORK_DIR}/%{GEN4_DOMD_BUILD_DIR}/tmp/deploy/images/%{GEN4_MACHINE}/Image-%{GEN4_MACHINE}.bin"
+        - "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image-%{MACHINE}.bin"
       target_images:
         - "build/zephyr/zephyr.bin"
 
-  gen4-domd:
+  domd:
     default: true
     build-dir: "%{YOCTOS_WORK_DIR}"
     sources:
@@ -207,33 +207,33 @@ components:
 
     builder:
       type: yocto
-      work_dir: "%{GEN4_DOMD_BUILD_DIR}"
+      work_dir: "%{DOMD_BUILD_DIR}"
       conf:
         - *COMMON_CONF
         - *DOMX_CONF
-        - [MACHINE, "%{GEN4_MACHINE}"]
-        - [SOC_FAMILY, "%{GEN4_SOC_FAMILY}"]
+        - [MACHINE, "%{MACHINE}"]
+        - [SOC_FAMILY, "%{SOC_FAMILY}"]
         - [XT_DOM_NAME, "domd"]
-        - [XT_DEVICE_TREES, "%{GEN4_XT_DOMD_DTB_NAME} %{GEN4_XT_XEN_DTB_NAME}"]
-        - [XT_KERNEL_BRANCH, "%{GEN4_XT_KERNEL_BRANCH}"]
-        - [XT_KERNEL_REV, "%{GEN4_XT_KERNEL_REV}"]
-        - [XT_OP_TEE_FLAVOUR, "%{GEN4_XT_OPTEE_FLAVOR}"]
-        - [GEN4_DOM0_OS, "%{GEN4_DOM0_OS}"]
+        - [XT_DEVICE_TREES, "%{XT_DOMD_DTB_NAME} %{XT_XEN_DTB_NAME}"]
+        - [XT_KERNEL_BRANCH, "%{XT_KERNEL_BRANCH}"]
+        - [XT_KERNEL_REV, "%{XT_KERNEL_REV}"]
+        - [XT_OP_TEE_FLAVOUR, "%{XT_OPTEE_FLAVOR}"]
+        - [DOM0_OS, "%{DOM0_OS}"]
 
         # Network configuration
-        - [DOMAIN_NAME, "%{GEN4_DOMAIN_NAME}"]
-        - [HOST_NAME, "%{GEN4_DOMD_HOST_NAME}"]
-        - [DOM0_HOST_NAME, "%{GEN4_DOM0_HOST_NAME}"]
-        - [DHCP_NET, "%{GEN4_DHCP_NET}"]
-        - [DOM0_IP, "%{GEN4_DOM0_IP}"]
-        - [DOMD_IP, "%{GEN4_DOMD_IP}"]
+        - [DOMAIN_NAME, "%{DOMAIN_NAME}"]
+        - [HOST_NAME, "%{DOMD_HOST_NAME}"]
+        - [DOM0_HOST_NAME, "%{DOM0_HOST_NAME}"]
+        - [DHCP_NET, "%{DHCP_NET}"]
+        - [DOM0_IP, "%{DOM0_IP}"]
+        - [DOMD_IP, "%{DOMD_IP}"]
         - [DNSMASQ_INTERFACES, "tsn1"]
-        - [DNSMASQ_ADDRESSES, "/wwwivi/%{GEN4_DOMD_IP}"]
+        - [DNSMASQ_ADDRESSES, "/wwwivi/%{DOMD_IP}"]
 
         # Aos configuration
-        - [AOS_NODE_ID, "%{GEN4_DOMD_NODE_ID}"]
-        - [AOS_NODE_HOSTNAME, "%{GEN4_DOMD_HOST_NAME}.%{GEN4_DOMAIN_NAME}"]
-        - [AOS_NODE_TYPE, "%{GEN4_DOMD_NODE_TYPE}"]
+        - [AOS_NODE_ID, "%{DOMD_NODE_ID}"]
+        - [AOS_NODE_HOSTNAME, "%{DOMD_HOST_NAME}.%{DOMAIN_NAME}"]
+        - [AOS_NODE_TYPE, "%{DOMD_NODE_TYPE}"]
         - [AOS_IAM_NODES, "%{IAM_NODES}"]
         - [AOS_IAM_HOSTNAMES, "%{IAM_HOSTNAMES}"]
         - [AOS_SM_NODES, "%{SM_NODES}"]
@@ -241,41 +241,41 @@ components:
         - [AOS_UM_COMPONENT_PREFIX, "%{UNIT_MODEL}-%{UNIT_VERSION}-gen4-"]
         - [AOS_VIS_DATA_PROVIDER, "%{VIS_DATA_PROVIDER}"]
 
-      build_target: "%{GEN4_XT_DOMD_IMAGE}"
+      build_target: "%{XT_DOMD_IMAGE}"
       layers:
-        - "../../../poky/meta"
-        - "../../../poky/meta-poky"
-        - "../../../poky/meta-yocto-bsp"
-        - "../../../meta-virtualization"
-        - "../../../meta-openembedded/meta-oe"
-        - "../../../meta-openembedded/meta-networking"
-        - "../../../meta-openembedded/meta-perl"
-        - "../../../meta-openembedded/meta-python"
-        - "../../../meta-openembedded/meta-filesystems"
-        - "../../../meta-selinux"
-        - "../../../meta-security"
-        - "../../../meta-aos"
-        - "../../../meta-renesas-gen4/meta-rcar-gateway"
-        - "../../../meta-xt-common/meta-xt-domx"
-        - "../../../meta-xt-common/meta-xt-driver-domain"
-        - "../../../meta-aos-rcar-gen4/meta-aos-rcar-common/meta-aos-rcar-common-domx"
-        - "../../../meta-aos-rcar-gen4/meta-aos-rcar-common/meta-aos-rcar-common-domd"
-        - "../../../meta-aos-rcar-gen4/meta-aos-rcar-gen4/meta-aos-rcar-gen4-domx"
-        - "../../../meta-aos-rcar-gen4/meta-aos-rcar-gen4/meta-aos-rcar-gen4-domd"
-        - "../../../meta-aos-rcar-gen4/meta-aos-rcar-gen4/meta-aos-rcar-gen4-driver-domain"
+        - "../poky/meta"
+        - "../poky/meta-poky"
+        - "../poky/meta-yocto-bsp"
+        - "../meta-virtualization"
+        - "../meta-openembedded/meta-oe"
+        - "../meta-openembedded/meta-networking"
+        - "../meta-openembedded/meta-perl"
+        - "../meta-openembedded/meta-python"
+        - "../meta-openembedded/meta-filesystems"
+        - "../meta-selinux"
+        - "../meta-security"
+        - "../meta-aos"
+        - "../meta-renesas-gen4/meta-rcar-gateway"
+        - "../meta-xt-common/meta-xt-domx"
+        - "../meta-xt-common/meta-xt-driver-domain"
+        - "../meta-aos-rcar-gen4/meta-aos-rcar-common/meta-aos-rcar-common-domx"
+        - "../meta-aos-rcar-gen4/meta-aos-rcar-common/meta-aos-rcar-common-domd"
+        - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4/meta-aos-rcar-gen4-domx"
+        - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4/meta-aos-rcar-gen4-domd"
+        - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4/meta-aos-rcar-gen4-driver-domain"
 
       target_images:
-        - "tmp/deploy/images/%{GEN4_MACHINE}/xen-%{GEN4_MACHINE}.uImage"
-        - "tmp/deploy/images/%{GEN4_MACHINE}/xenpolicy-%{GEN4_MACHINE}"
-        - "tmp/deploy/images/%{GEN4_MACHINE}/%{GEN4_XT_XEN_DTB_NAME}"
-        - "tmp/deploy/images/%{GEN4_MACHINE}/rcar-image-minimal-%{GEN4_MACHINE}.ext4"
-        - "tmp/work-shared/rcar-image-minimal-%{GEN4_MACHINE}/rootfs/var"
-        - "tmp/deploy/images/%{GEN4_MACHINE}/Image-%{GEN4_MACHINE}.bin"
-        - "tmp/deploy/images/%{GEN4_MACHINE}/dom0/aos/version"
-        - "tmp/deploy/images/%{GEN4_MACHINE}/aos-image-initramfs-%{GEN4_MACHINE}.cpio.gz"
+        - "tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
+        - "tmp/deploy/images/%{MACHINE}/xenpolicy-%{MACHINE}"
+        - "tmp/deploy/images/%{MACHINE}/%{XT_XEN_DTB_NAME}"
+        - "tmp/deploy/images/%{MACHINE}/rcar-image-minimal-%{MACHINE}.ext4"
+        - "tmp/work-shared/rcar-image-minimal-%{MACHINE}/rootfs/var"
+        - "tmp/deploy/images/%{MACHINE}/Image-%{MACHINE}.bin"
+        - "tmp/deploy/images/%{MACHINE}/dom0/aos/version"
+        - "tmp/deploy/images/%{MACHINE}/aos-image-initramfs-%{MACHINE}.cpio.gz"
 
 images:
-  gen4_full:
+  full:
     type: gpt
     desc: "Full UFS image"
     sector_size: 4096
@@ -285,26 +285,26 @@ images:
         type: ext4
         size: 128 MiB
         items:
-          "aos/version": "%{YOCTOS_WORK_DIR}/%{GEN4_DOMD_BUILD_DIR}/tmp/deploy/images/%{GEN4_MACHINE}/dom0/aos/version"
-          "xen": "%{YOCTOS_WORK_DIR}/%{GEN4_DOMD_BUILD_DIR}/tmp/deploy/images/%{GEN4_MACHINE}/xen-%{GEN4_MACHINE}.uImage"
-          "xenpolicy": "%{YOCTOS_WORK_DIR}/%{GEN4_DOMD_BUILD_DIR}/tmp/deploy/images/%{GEN4_MACHINE}/xenpolicy-%{GEN4_MACHINE}"
-          "xen.dtb": "%{YOCTOS_WORK_DIR}/%{GEN4_DOMD_BUILD_DIR}/tmp/deploy/images/%{GEN4_MACHINE}/%{GEN4_XT_XEN_DTB_NAME}"
-          "zephyr.bin": "%{GEN4_ZEPHYR_DOM0_DIR}/build/zephyr/zephyr.bin"
-          "linux-domd": "%{YOCTOS_WORK_DIR}/%{GEN4_DOMD_BUILD_DIR}/tmp/deploy/images/%{GEN4_MACHINE}/Image-%{GEN4_MACHINE}.bin"
-          "initramfs-domd": "%{YOCTOS_WORK_DIR}/%{GEN4_DOMD_BUILD_DIR}/tmp/deploy/images/%{GEN4_MACHINE}/aos-image-initramfs-%{GEN4_MACHINE}.cpio.gz"
+          "aos/version": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/dom0/aos/version"
+          "xen": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
+          "xenpolicy": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xenpolicy-%{MACHINE}"
+          "xen.dtb": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{XT_XEN_DTB_NAME}"
+          "zephyr.bin": "%{ZEPHYR_DOM0_DIR}/build/zephyr/zephyr.bin"
+          "linux-domd": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image-%{MACHINE}.bin"
+          "initramfs-domd": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/aos-image-initramfs-%{MACHINE}.cpio.gz"
 
       boot_b:
         gpt_type: 21686148-6449-6E6F-744E-656564454649 # BIOS boot partition (kinda...)
         type: ext4
         size: 128 MiB
         items:
-          "aos/version": "%{YOCTOS_WORK_DIR}/%{GEN4_DOMD_BUILD_DIR}/tmp/deploy/images/%{GEN4_MACHINE}/dom0/aos/version"
-          "xen": "%{YOCTOS_WORK_DIR}/%{GEN4_DOMD_BUILD_DIR}/tmp/deploy/images/%{GEN4_MACHINE}/xen-%{GEN4_MACHINE}.uImage"
-          "xenpolicy": "%{YOCTOS_WORK_DIR}/%{GEN4_DOMD_BUILD_DIR}/tmp/deploy/images/%{GEN4_MACHINE}/xenpolicy-%{GEN4_MACHINE}"
-          "xen.dtb": "%{YOCTOS_WORK_DIR}/%{GEN4_DOMD_BUILD_DIR}/tmp/deploy/images/%{GEN4_MACHINE}/%{GEN4_XT_XEN_DTB_NAME}"
-          "zephyr.bin": "%{GEN4_ZEPHYR_DOM0_DIR}/build/zephyr/zephyr.bin"
-          "linux-domd": "%{YOCTOS_WORK_DIR}/%{GEN4_DOMD_BUILD_DIR}/tmp/deploy/images/%{GEN4_MACHINE}/Image-%{GEN4_MACHINE}.bin"
-          "initramfs-domd": "%{YOCTOS_WORK_DIR}/%{GEN4_DOMD_BUILD_DIR}/tmp/deploy/images/%{GEN4_MACHINE}/aos-image-initramfs-%{GEN4_MACHINE}.cpio.gz"
+          "aos/version": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/dom0/aos/version"
+          "xen": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
+          "xenpolicy": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xenpolicy-%{MACHINE}"
+          "xen.dtb": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{XT_XEN_DTB_NAME}"
+          "zephyr.bin": "%{ZEPHYR_DOM0_DIR}/build/zephyr/zephyr.bin"
+          "linux-domd": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image-%{MACHINE}.bin"
+          "initramfs-domd": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/aos-image-initramfs-%{MACHINE}.cpio.gz"
 
       boot_env:
         gpt_type: 21686148-6449-6E6F-744E-656564454649 # BIOS boot partition (kinda...)
@@ -315,14 +315,14 @@ images:
         gpt_type: B921B045-1DF0-41C3-AF44-4C6F280D3FAE # Linux aarch64 root
         type: raw_image
         size: 1024 MiB
-        image_path: "%{YOCTOS_WORK_DIR}/%{GEN4_DOMD_BUILD_DIR}/tmp/deploy/images/%{GEN4_MACHINE}/rcar-image-minimal-spider.ext4"
+        image_path: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/rcar-image-minimal-spider.ext4"
 
       domd_var:
         gpt_type: B921B045-1DF0-41C3-AF44-4C6F280D3FAE # Linux aarch64 root
         type: ext4
         size: 512 MiB
         items:
-          "/": "%{YOCTOS_WORK_DIR}/%{GEN4_DOMD_BUILD_DIR}/tmp/work-shared/rcar-image-minimal-%{GEN4_MACHINE}/rootfs/var"
+          "/": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/work-shared/rcar-image-minimal-%{MACHINE}/rootfs/var"
 
       domd_aos:
         gpt_type: CA7D7CCB-63ED-4C53-861C-1742536059CC # LUKS partition
