@@ -1,5 +1,0 @@
-[Match]
-MACAddress=%{DOM0_MAC}
-
-[Link]
-Name=eth0
