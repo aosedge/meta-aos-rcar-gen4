@@ -51,7 +51,6 @@ variables:
   SOC_FAMILY: "r8a779f0"
   ZEPHYR_DOM0_MACHINE: "rcar_spider"
 
-  DOM0_BUILD_DIR: "build-dom0"
   DOMD_BUILD_DIR: "build-domd"
   ZEPHYR_DOM0_DIR: "zephyr/dom0"
 
@@ -258,10 +257,6 @@ components:
         - "../meta-renesas-gen4/meta-rcar-gateway"
         - "../meta-xt-common/meta-xt-domx"
         - "../meta-xt-common/meta-xt-driver-domain"
-        - "../meta-aos-rcar-gen4/meta-aos-rcar-common/meta-aos-rcar-common-domx"
-        - "../meta-aos-rcar-gen4/meta-aos-rcar-common/meta-aos-rcar-common-domd"
-        - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4/meta-aos-rcar-gen4-domx"
-        - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4/meta-aos-rcar-gen4-domd"
         - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4/meta-aos-rcar-gen4-driver-domain"
 
       target_images:
