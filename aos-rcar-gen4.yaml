@@ -1,11 +1,10 @@
-desc: "Aos virtual development machine"
-min_ver: "0.19"
+desc: "Aos development setup for Renesas RCAR Gen4 hardware"
+min_ver: "0.20"
 
 variables:
-  # Common build configuration
-
   YOCTOS_WORK_DIR: "yocto"
-  GENERIC_MACHINE: "generic-armv8-xt"
+  DOMD_BUILD_DIR: "build-domd"
+  ZEPHYR_DOM0_DIR: "zephyr/dom0"
 
   # Aos unit configuration
 
@@ -51,9 +50,6 @@ variables:
   SOC_FAMILY: "r8a779f0"
   ZEPHYR_DOM0_MACHINE: "rcar_spider"
 
-  DOMD_BUILD_DIR: "build-domd"
-  ZEPHYR_DOM0_DIR: "zephyr/dom0"
-
   XT_DOMD_DTB_NAME: "%{SOC_FAMILY}-%{MACHINE}-domd.dtb"
   XT_XEN_DTB_NAME: "%{SOC_FAMILY}-%{MACHINE}-xen.dtb"
   XT_DOMD_CONFIG_NAME: "domd-%{MACHINE}.cfg"
@@ -63,45 +59,7 @@ variables:
   XT_KERNEL_BRANCH: "v5.10.41/rcar-5.1.7.rc6-xt"
   XT_KERNEL_REV: f5bb327b43cc6248cde9f3baf18e64257be8bc02
 
-  XT_DOMD_IMAGE: "rcar-image-minimal"
-
 common_data:
-  # Sources used by all domains
-  common_sources: &COMMON_SOURCES
-    - type: git
-      url: "https://git.yoctoproject.org/poky"
-      rev: "3155eb565f"
-    - type: git
-      url: "https://git.openembedded.org/meta-openembedded"
-      rev: "7203130ed"
-    - type: git
-      url: "https://git.yoctoproject.org/meta-virtualization"
-      rev: "beea119"
-    - type: git
-      url: "git://git.yoctoproject.org/meta-security"
-      rev: "c62970f"
-    - type: git
-      url: "https://github.com/aoscloud/meta-aos"
-      rev: "v7.2.0"
-    - type: git
-      url: "https://github.com/xen-troops/meta-xt-common.git"
-      rev: "c1ad85f"
-    - type: git
-      url: "https://github.com/aoscloud/meta-aos-rcar-gen4"
-      rev: "develop"
-
-  # Zephyr sources
-  zephyr_sources: &ZEPHYR_SOURCES
-    - type: west
-      url: "https://github.com/aoscloud/aos_core_zephyr.git"
-      rev: "v0.2.0"
-
-  # Sources to be used in DomD
-  domd_sources: &DOMD_SOURCES
-    - type: git
-      url: "git://git.yoctoproject.org/meta-selinux"
-      rev: "1a13839"
-
   # Common configuration options for all yocto-based domains
   common_conf: &COMMON_CONF
     - [SSTATE_DIR, "${TOPDIR}/../../../common_data/sstate"]
@@ -132,51 +90,15 @@ common_data:
     - [AOS_UNIT_VERSION, "%{UNIT_VERSION}"]
     - [AOS_MAIN_NODE_ID, "%{DOMD_NODE_ID}"]
     - [AOS_MAIN_NODE_HOSTNAME, "%{DOMD_HOST_NAME}.%{DOMAIN_NAME}"]
-    - [AOS_DOM0_IMAGE_VERSION, "%{BUNDLE_IMAGE_VERSION}"]
-    - [AOS_DOMD_IMAGE_VERSION, "%{BUNDLE_IMAGE_VERSION}"]
-
-  # Common configuration options for all dom0
-  dom0_conf:
-    &DOM0_CONF # Disable HWDB which quite huge (around 15MB) and is not required at all
-    - [BAD_RECOMMENDATIONS_append, " udev-hwdb"]
-
-    # Aos configuration
-    - [AOS_RUNNER, "runx"]
-
-    - [AOS_BUNDLE_DIR, "${TOPDIR}/../.."]
-    - [AOS_BUNDLE_OSTREE_REPO, "${TOPDIR}/../../rootfs_repo"]
-    - [AOS_BUNDLE_IMAGE_VERSION, "%{BUNDLE_IMAGE_VERSION}"]
-    - [AOS_BUNDLE_DOM0_TYPE, "%{BUNDLE_DOM0_TYPE}"]
-    - [AOS_BUNDLE_DOMD_TYPE, "%{BUNDLE_DOMD_TYPE}"]
-    - [AOS_DOMD_REF_VERSION, "%{BUNDLE_REF_VERSION}"]
-
-  # Common configuration options for all domx
-  domx_conf: &DOMX_CONF # add the static lib to SDK toolchain
-    - [SDKIMAGE_FEATURES_append, " staticdev-pkgs"]
-
-    # Remove ptest to reduce the build time
-    - [DISTRO_FEATURES_remove, "ptest"]
-
-    # Add Capacity Aware migration Strategy (CAS)
-    - [MACHINE_FEATURES_append, " cas"]
-
-    # Enable seccomp for crun
-    - [DISTRO_FEATURES_append, " seccomp"]
-
-    # Initramfs configuration
-    - [INITRAMFS_IMAGE, "aos-image-initramfs"]
-    - [INITRAMFS_IMAGE_BUNDLE, "0"]
-    - [INITRAMFS_FSTYPES, "cpio.gz"]
-
-    # Generate ext4 image files
-    - [IMAGE_FSTYPES_append, " ext4"]
 
 components:
   dom0:
     default: true
     build-dir: "%{ZEPHYR_DOM0_DIR}"
     sources:
-      - *ZEPHYR_SOURCES
+      - type: west
+        url: "https://github.com/aoscloud/aos_core_zephyr.git"
+        rev: "v0.2.0"
 
     builder:
       type: zephyr
@@ -197,19 +119,39 @@ components:
     default: true
     build-dir: "%{YOCTOS_WORK_DIR}"
     sources:
-      - *COMMON_SOURCES
-      - *DOMD_SOURCES
+      - type: git
+        url: "https://git.yoctoproject.org/poky"
+        rev: "3155eb565f"
+      - type: git
+        url: "https://git.openembedded.org/meta-openembedded"
+        rev: "7203130ed"
+      - type: git
+        url: "https://git.yoctoproject.org/meta-virtualization"
+        rev: "beea119"
+      - type: git
+        url: "git://git.yoctoproject.org/meta-security"
+        rev: "c62970f"
+      - type: git
+        url: "https://github.com/aoscloud/meta-aos"
+        rev: "v7.2.0"
+      - type: git
+        url: "https://github.com/xen-troops/meta-xt-common.git"
+        rev: "c1ad85f"
+      - type: git
+        url: "https://github.com/aoscloud/meta-aos-rcar-gen4"
+        rev: "develop"
+      - type: git
+        url: "git://git.yoctoproject.org/meta-selinux"
+        rev: "1a13839"
       - type: git
         url: https://github.com/renesas-rcar/meta-renesas.git
         rev: "7c29e7bdae360a86fa77ef561e01cc0c18d2e01f"
-        dir: "meta-renesas-gen4"
 
     builder:
       type: yocto
       work_dir: "%{DOMD_BUILD_DIR}"
       conf:
         - *COMMON_CONF
-        - *DOMX_CONF
         - [MACHINE, "%{MACHINE}"]
         - [SOC_FAMILY, "%{SOC_FAMILY}"]
         - [XT_DOM_NAME, "domd"]
@@ -218,6 +160,21 @@ components:
         - [XT_KERNEL_REV, "%{XT_KERNEL_REV}"]
         - [XT_OP_TEE_FLAVOUR, "%{XT_OPTEE_FLAVOR}"]
         - [DOM0_OS, "%{DOM0_OS}"]
+
+        - [SDKIMAGE_FEATURES_append, " staticdev-pkgs"]
+        # Remove ptest to reduce the build time
+        - [DISTRO_FEATURES_remove, "ptest"]
+        # Add Capacity Aware migration Strategy (CAS)
+        - [MACHINE_FEATURES_append, " cas"]
+        # Enable seccomp for crun
+        - [DISTRO_FEATURES_append, " seccomp"]
+        # Initramfs configuration
+        - [INITRAMFS_IMAGE, "aos-image-initramfs"]
+        - [INITRAMFS_IMAGE_BUNDLE, "0"]
+        - [INITRAMFS_FSTYPES, "cpio.gz"]
+
+        # Generate ext4 image files
+        - [IMAGE_FSTYPES_append, " ext4"]
 
         # Network configuration
         - [DOMAIN_NAME, "%{DOMAIN_NAME}"]
@@ -240,7 +197,7 @@ components:
         - [AOS_UM_COMPONENT_PREFIX, "%{UNIT_MODEL}-%{UNIT_VERSION}-gen4-"]
         - [AOS_VIS_DATA_PROVIDER, "%{VIS_DATA_PROVIDER}"]
 
-      build_target: "%{XT_DOMD_IMAGE}"
+      build_target: "rcar-image-minimal"
       layers:
         - "../poky/meta"
         - "../poky/meta-poky"
@@ -251,12 +208,12 @@ components:
         - "../meta-openembedded/meta-perl"
         - "../meta-openembedded/meta-python"
         - "../meta-openembedded/meta-filesystems"
-        - "../meta-selinux"
         - "../meta-security"
-        - "../meta-aos"
-        - "../meta-renesas-gen4/meta-rcar-gateway"
+        - "../meta-selinux"
+        - "../meta-renesas/meta-rcar-gateway"
         - "../meta-xt-common/meta-xt-domx"
         - "../meta-xt-common/meta-xt-driver-domain"
+        - "../meta-aos"
         - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4/meta-aos-rcar-gen4-driver-domain"
 
       target_images:
