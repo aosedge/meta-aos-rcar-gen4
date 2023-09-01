@@ -29,8 +29,8 @@ variables:
 
   XT_OPTEE_FLAVOR: "spider_s4"
 
-  XT_KERNEL_BRANCH: "v5.10.41/rcar-5.1.7.rc6-xt"
-  XT_KERNEL_REV: "f5bb327b43cc6248cde9f3baf18e64257be8bc02"
+  XT_KERNEL_BRANCH: "v5.10.41/rcar-5.1.7.rc11-xt"
+  XT_KERNEL_REV: "${AUTOREV}"
 
 common_data:
   # Common configuration options for all yocto-based domains
@@ -85,13 +85,16 @@ components:
     sources:
       - type: git
         url: "https://git.yoctoproject.org/poky"
-        rev: "3155eb565f"
+        # We can't use dunfell branch, due to conlict with openssl, which revision
+        # is fixed to 1.1.1o, and poky will try to apply patches for newer version.
+        # So, we have to use commit "386041424 efivar: change branch name to main".
+        rev: "386041424"
       - type: git
         url: "https://git.openembedded.org/meta-openembedded"
-        rev: "7203130ed"
+        rev: "814eec96c"
       - type: git
         url: "https://git.yoctoproject.org/meta-virtualization"
-        rev: "beea119"
+        rev: "180241e"
       - type: git
         url: "git://git.yoctoproject.org/meta-security"
         rev: "c62970f"
@@ -99,17 +102,17 @@ components:
         url: "https://github.com/aoscloud/meta-aos"
         rev: "v7.2.0"
       - type: git
-        url: "https://github.com/xen-troops/meta-xt-common.git"
-        rev: "c1ad85f"
+        url: "https://github.com/xen-troops/meta-xt-common"
+        rev: "dunfell"
       - type: git
         url: "https://github.com/aoscloud/meta-aos-rcar-gen4"
         rev: "develop"
       - type: git
         url: "git://git.yoctoproject.org/meta-selinux"
-        rev: "1a13839"
+        rev: "46bcf05"
       - type: git
         url: https://github.com/renesas-rcar/meta-renesas.git
-        rev: "7c29e7bdae360a86fa77ef561e01cc0c18d2e01f"
+        rev: "dunfell"
 
     builder:
       type: yocto
