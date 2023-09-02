@@ -1,4 +1,4 @@
-require ../../meta-aos-rcar-gen4/meta-aos-rcar-gen4-domd/recipes-security/optee/optee-os_git.bb
+require optee-os_git.bb
 
 PV = "3.18.0+git${SRCPV}"
 
