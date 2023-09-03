@@ -105,6 +105,9 @@ components:
         url: "https://github.com/xen-troops/meta-xt-common"
         rev: "dunfell"
       - type: git
+        url: "https://github.com/xen-troops/meta-xt-rcar"
+        rev: "dunfell"
+      - type: git
         url: "https://github.com/aoscloud/meta-aos-rcar-gen4"
         rev: "develop"
       - type: git
@@ -169,6 +172,7 @@ components:
         - "../meta-renesas/meta-rcar-gateway"
         - "../meta-xt-common/meta-xt-domx"
         - "../meta-xt-common/meta-xt-driver-domain"
+        - "../meta-xt-rcar/meta-xt-gateway/meta-xt-domd-gen4"
         - "../meta-aos"
         - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-domd"
 
