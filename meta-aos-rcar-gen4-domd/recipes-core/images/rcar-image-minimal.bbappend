@@ -2,9 +2,12 @@ require recipes-core/images/aos-image.inc
 
 # System components
 IMAGE_INSTALL_append = " \
+    devmem2 \
+    iccom-support \
+    pciutils \
+    optee-test \
     openssh \
     iperf3 \
-    snort \
     xen \
     xen-tools-devd \
     xen-tools-scripts-network \
@@ -13,22 +16,18 @@ IMAGE_INSTALL_append = " \
     xen-tools-pcid \
     xen-network \
     dnsmasq \
-    pciutils \
-    devmem2 \
-    iccom-support \
-    optee-test \
     block \
     iputils \
-    iproute2 \
-    iproute2-tc \
-    tcpdump \
-    nvme-cli \
-    kernel-module-nvme-core \
-    kernel-module-nvme \
-    kernel-module-ixgbe \
-    e2fsprogs \
     aos-messageproxy \
 "
+
+IMAGE_INSTALL_append = " iproute2 iproute2-tc tcpdump nvme-cli"
+
+IMAGE_INSTALL_append = " kernel-module-nvme-core kernel-module-nvme"
+
+IMAGE_INSTALL_append = " kernel-module-ixgbe"
+
+IMAGE_INSTALL_append = " e2fsprogs"
 
 AOS_ROOTFS_IMAGE_VERSION = "${AOS_DOMD_IMAGE_VERSION}"
 
