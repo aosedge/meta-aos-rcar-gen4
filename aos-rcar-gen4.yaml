@@ -65,7 +65,7 @@ components:
     sources:
       - type: west
         url: "https://github.com/aoscloud/aos_core_zephyr.git"
-        rev: "v0.2.0"
+        rev: "develop"
 
     builder:
       type: zephyr
