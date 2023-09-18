@@ -16,6 +16,14 @@ SRC_URI_append = " \
     file://0002-PCIe-MSI-support.patch \
 "
 
+# HACK
+# File disable_pcie.cfg desables few PCI related options.
+# This is required only for xen's branch spider-aos-demo-2023
+# and need to be removed as soon as PCI works as expected.
+SRC_URI_append = " \
+    file://disable_pcie.cfg \
+"
+
 KERNEL_MODULE_PROBECONF += "ixgbevf"
 module_conf_ixgbevf = "blacklist ixgbevf"
 
