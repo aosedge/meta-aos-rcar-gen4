@@ -2,26 +2,19 @@ desc: "Aos development setup for Renesas RCAR Gen4 hardware"
 min_ver: "0.20"
 
 variables:
+  # Build dirs
+
   YOCTOS_WORK_DIR: "yocto"
   DOMD_BUILD_DIR: "build-domd"
-  ZEPHYR_DOM0_DIR: "zephyr/dom0"
+  DOM0_BUILD_DIR: "zephyr/build-dom0"
 
-  DOM0_OS: "zephyr"
-
-  # Network configuration
-
-  DOMAIN_NAME: "gen4"
-  DOM0_HOST_NAME: "dom0"
-  DOMD_HOST_NAME: "domd"
-  DHCP_NET: "10.0.1"
-  DOM0_IP: "10.0.1.2"
-  DOMD_IP: "10.0.1.1"
-
-  # Gen4 build configuration
+  # Machine
 
   MACHINE: "spider"
   SOC_FAMILY: "r8a779f0"
-  ZEPHYR_DOM0_MACHINE: "rcar_spider"
+  ZEPHYR_MACHINE: "rcar_spider"
+
+  # XT config
 
   XT_DOMD_DTB_NAME: "%{SOC_FAMILY}-%{MACHINE}-domd.dtb"
   XT_XEN_DTB_NAME: "%{SOC_FAMILY}-%{MACHINE}-xen.dtb"
@@ -33,22 +26,77 @@ variables:
   XT_KERNEL_REV: "${AUTOREV}"
 
 common_data:
+  # Sources used by all yocto-based domains
+  sources: &COMMON_SOURCES
+    - type: git
+      url: "https://git.yoctoproject.org/poky"
+      rev: "232b5533d"
+
+    - type: git
+      url: "https://git.openembedded.org/meta-openembedded"
+      rev: "814eec96c"
+
+    - type: git
+      url: "https://git.yoctoproject.org/meta-virtualization"
+      rev: "180241e"
+
+    - type: git
+      url: "git://git.yoctoproject.org/meta-security"
+      rev: "c62970f"
+
+    - type: git
+      url: "git://git.yoctoproject.org/meta-selinux"
+      rev: "46bcf05"
+
+    - type: git
+      url: "https://github.com/aoscloud/meta-aos"
+      rev: "v7.2.0"
+
+    - type: git
+      url: https://github.com/renesas-rcar/meta-renesas.git
+      rev: "dunfell"
+
+    - type: git
+      url: "https://github.com/xen-troops/meta-xt-common"
+      rev: "dunfell"
+
+    - type: git
+      url: "https://github.com/xen-troops/meta-xt-rcar"
+      rev: "dunfell"
+
+    - type: git
+      url: "https://github.com/aoscloud/meta-aos-rcar-gen4"
+      rev: "develop"
+
   # Common configuration options for all yocto-based domains
   common_conf: &COMMON_CONF
     - [SSTATE_DIR, "${TOPDIR}/../../../common_data/sstate"]
     - [DL_DIR, "${TOPDIR}/../../../common_data/downloads"]
 
-    # Skip warning about missing "virtualization" distro feature
-    - [SKIP_META_VIRT_SANITY_CHECK, "1"]
-
-    # Use hypervisor console on all guests
-    - [SERIAL_CONSOLES, "115200;hvc0"]
+    - [MACHINE, "%{MACHINE}"]
+    - [SOC_FAMILY, "%{SOC_FAMILY}"]
 
     # Init manager
     - [INIT_MANAGER, "systemd"]
 
+    # Use hypervisor console on all guests
+    - [SERIAL_CONSOLES, "115200;hvc0"]
+
+    # Skip warning about missing "virtualization" distro feature
+    - [SKIP_META_VIRT_SANITY_CHECK, "1"]
+
     # Do not install kernel image to rootfs to decrease initrd size
     - ["RDEPENDS_${KERNEL_PACKAGE_NAME}-base", ""]
+
+    # Generate ext4 image files
+    - [IMAGE_FSTYPES:append, " ext4"]
+
+    # Initramfs configuration
+    - [INITRAMFS_IMAGE, "aos-image-initramfs"]
+    - [INITRAMFS_IMAGE_BUNDLE, "0"]
+    - [INITRAMFS_FSTYPES, "cpio.gz"]
+
+    # Distro features
 
     # Remove features that we are not using
     - [
@@ -57,11 +105,23 @@ common_data:
         bluetooth irda zeroconf 3g sysvinit acl alsa argp pcmcia usbgadget
         usbhost opengl ptest multiarch wayland vulkan sysvinit",
       ]
+    # Remove ptest to reduce the build time
+    - [DISTRO_FEATURES_remove, "ptest"]
+
+    # Machine features
+
+    # Add Capacity Aware migration Strategy (CAS)
+    - [MACHINE_FEATURES_append, " cas"]
+
+    # SDK features
+
+    # add the static lib to SDK toolchain
+    - [SDKIMAGE_FEATURES:append, " staticdev-pkgs"]
 
 components:
   dom0:
     default: true
-    build-dir: "%{ZEPHYR_DOM0_DIR}"
+    build-dir: "%{DOM0_BUILD_DIR}"
     sources:
       - type: west
         url: "https://github.com/aoscloud/aos_core_zephyr.git"
@@ -69,13 +129,15 @@ components:
 
     builder:
       type: zephyr
-      board: "%{ZEPHYR_DOM0_MACHINE}"
+      board: "%{ZEPHYR_MACHINE}"
       target: aos_core_zephyr
       work_dir: build
       shields:
         - "xen_dom0"
+
       additional_deps:
         - "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image-%{MACHINE}.bin"
+
       target_images:
         - "build/zephyr/zephyr.bin"
 
@@ -83,78 +145,18 @@ components:
     default: true
     build-dir: "%{YOCTOS_WORK_DIR}"
     sources:
-      - type: git
-        url: "https://git.yoctoproject.org/poky"
-        # We can't use dunfell branch, due to conlict with openssl, which revision
-        # is fixed to 1.1.1o, and poky will try to apply patches for newer version.
-        # So, we have to use commit "386041424 efivar: change branch name to main".
-        rev: "386041424"
-      - type: git
-        url: "https://git.openembedded.org/meta-openembedded"
-        rev: "814eec96c"
-      - type: git
-        url: "https://git.yoctoproject.org/meta-virtualization"
-        rev: "180241e"
-      - type: git
-        url: "git://git.yoctoproject.org/meta-security"
-        rev: "c62970f"
-      - type: git
-        url: "https://github.com/aoscloud/meta-aos"
-        rev: "v7.2.0"
-      - type: git
-        url: "https://github.com/xen-troops/meta-xt-common"
-        rev: "dunfell"
-      - type: git
-        url: "https://github.com/xen-troops/meta-xt-rcar"
-        rev: "dunfell"
-      - type: git
-        url: "https://github.com/aoscloud/meta-aos-rcar-gen4"
-        rev: "develop"
-      - type: git
-        url: "git://git.yoctoproject.org/meta-selinux"
-        rev: "46bcf05"
-      - type: git
-        url: https://github.com/renesas-rcar/meta-renesas.git
-        rev: "dunfell"
+      - *COMMON_SOURCES
 
     builder:
       type: yocto
       work_dir: "%{DOMD_BUILD_DIR}"
       conf:
         - *COMMON_CONF
-        - [MACHINE, "%{MACHINE}"]
-        - [SOC_FAMILY, "%{SOC_FAMILY}"]
         - [XT_DOM_NAME, "domd"]
         - [XT_DEVICE_TREES, "%{XT_DOMD_DTB_NAME} %{XT_XEN_DTB_NAME}"]
         - [XT_KERNEL_BRANCH, "%{XT_KERNEL_BRANCH}"]
         - [XT_KERNEL_REV, "%{XT_KERNEL_REV}"]
         - [XT_OP_TEE_FLAVOUR, "%{XT_OPTEE_FLAVOR}"]
-        - [DOM0_OS, "%{DOM0_OS}"]
-
-        - [SDKIMAGE_FEATURES_append, " staticdev-pkgs"]
-        # Remove ptest to reduce the build time
-        - [DISTRO_FEATURES_remove, "ptest"]
-        # Add Capacity Aware migration Strategy (CAS)
-        - [MACHINE_FEATURES_append, " cas"]
-        # Enable seccomp for crun
-        - [DISTRO_FEATURES_append, " seccomp"]
-        # Initramfs configuration
-        - [INITRAMFS_IMAGE, "aos-image-initramfs"]
-        - [INITRAMFS_IMAGE_BUNDLE, "0"]
-        - [INITRAMFS_FSTYPES, "cpio.gz"]
-
-        # Generate ext4 image files
-        - [IMAGE_FSTYPES_append, " ext4"]
-
-        # Network configuration
-        - [DOMAIN_NAME, "%{DOMAIN_NAME}"]
-        - [HOST_NAME, "%{DOMD_HOST_NAME}"]
-        - [DOM0_HOST_NAME, "%{DOM0_HOST_NAME}"]
-        - [DHCP_NET, "%{DHCP_NET}"]
-        - [DOM0_IP, "%{DOM0_IP}"]
-        - [DOMD_IP, "%{DOMD_IP}"]
-        - [DNSMASQ_INTERFACES, "tsn1"]
-        - [DNSMASQ_ADDRESSES, "/wwwivi/%{DOMD_IP}"]
 
       build_target: "rcar-image-minimal"
       layers:
@@ -169,11 +171,13 @@ components:
         - "../meta-openembedded/meta-filesystems"
         - "../meta-security"
         - "../meta-selinux"
+        - "../meta-aos"
         - "../meta-renesas/meta-rcar-gateway"
         - "../meta-xt-common/meta-xt-domx"
         - "../meta-xt-common/meta-xt-driver-domain"
         - "../meta-xt-rcar/meta-xt-gateway/meta-xt-domd-gen4"
-        - "../meta-aos"
+        - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-domx"
+        - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-driver-domain"
         - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-domd"
 
       target_images:
@@ -199,7 +203,7 @@ images:
           "xen": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
           "xenpolicy": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xenpolicy-%{MACHINE}"
           "xen.dtb": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{XT_XEN_DTB_NAME}"
-          "zephyr.bin": "%{ZEPHYR_DOM0_DIR}/build/zephyr/zephyr.bin"
+          "zephyr.bin": "%{DOM0_BUILD_DIR}/build/zephyr/zephyr.bin"
           "linux-domd": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image-%{MACHINE}.bin"
           "initramfs-domd": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/aos-image-initramfs-%{MACHINE}.cpio.gz"
 
@@ -211,7 +215,7 @@ images:
           "xen": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
           "xenpolicy": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xenpolicy-%{MACHINE}"
           "xen.dtb": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{XT_XEN_DTB_NAME}"
-          "zephyr.bin": "%{ZEPHYR_DOM0_DIR}/build/zephyr/zephyr.bin"
+          "zephyr.bin": "%{DOM0_BUILD_DIR}/build/zephyr/zephyr.bin"
           "linux-domd": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image-%{MACHINE}.bin"
           "initramfs-domd": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/aos-image-initramfs-%{MACHINE}.cpio.gz"
 
@@ -223,7 +227,6 @@ images:
       domd_rootfs:
         gpt_type: B921B045-1DF0-41C3-AF44-4C6F280D3FAE # Linux aarch64 root
         type: raw_image
-        size: 1024 MiB
         image_path: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/rcar-image-minimal-spider.ext4"
 
       domd_var:
