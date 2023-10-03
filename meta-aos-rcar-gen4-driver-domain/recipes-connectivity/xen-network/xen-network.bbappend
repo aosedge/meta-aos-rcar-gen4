@@ -23,15 +23,4 @@ do_install_append() {
     echo "[Route]"  >> ${D}${sysconfdir}/systemd/network/tsn1.network
     echo "Gateway=10.0.0.2" >> ${D}${sysconfdir}/systemd/network/tsn1.network
     echo "Destination=${GEN3_DHCP_NET}.0/24" >> ${D}${sysconfdir}/systemd/network/tsn1.network
-
-    if [ -z ${DHCP_NET} ]; then
-        bberror "DHCP_NET is not set"
-        exit 1
-    fi
-
-    sed -i "s/192.168.0/${DHCP_NET}/g" ${D}${sysconfdir}/systemd/network/xenbr0.network
-
-    if [ -f ${D}${sysconfdir}/systemd/system/systemd-networkd.service.d/port-forward-systemd-networkd.conf ]; then
-        sed -i "s/192.168.0/${DHCP_NET}/g" ${D}${sysconfdir}/systemd/system/systemd-networkd.service.d/port-forward-systemd-networkd.conf
-    fi
 }

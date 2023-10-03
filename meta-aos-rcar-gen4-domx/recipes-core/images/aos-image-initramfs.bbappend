@@ -9,3 +9,8 @@ AOS_INITRAMFS_SCRIPTS += " \
     optee-client \
     lvm2 \
 "
+
+python () {
+    if 'selinux' in d.getVar('DISTRO_FEATURES').split():
+        d.setVar('INITRAMFS_MAXSIZE', '262144')
+}
