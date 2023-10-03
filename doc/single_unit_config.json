@@ -1,0 +1,14 @@
+{
+    "components": [
+        {
+            "id": "rcar-gen4-1.0-spider-boot"
+        },
+        {
+            "id": "rcar-gen4-1.0-spider-domd"
+        },
+        {
+            "id": "rcar-gen4-1.0-spider-rh850"
+        }
+    ],
+    "formatVersion": 1
+}
