@@ -1,12 +1,4 @@
-require optee-os_git.bb
-
-PV = "3.18.0+git${SRCPV}"
-
-SRC_URI = "git://github.com/OP-TEE/optee_os.git"
-# optee-os 3.18.0
-SRCREV = "1ee647035939e073a2e8dddb727c0f019cc035f1"
-
-COMPATIBLE_MACHINE = "(salvator-x|h3ulcb|m3ulcb|m3nulcb|spider|generic-armv8-xt)"
+require optee-os.inc
 
 libdir[unexport] = "1"
 
@@ -14,11 +6,9 @@ EXTRA_OEMAKE += " \
     CFG_PKCS11_TA_HEAP_SIZE="(256 * 1024)" \
 "
 
-FILES_${PN} += " \
+FILES:${PN} += " \
     ${nonarch_base_libdir} \
 "
-
-do_deploy[noexec] = "1"
 
 do_install() {
     # install pkcs11 TA

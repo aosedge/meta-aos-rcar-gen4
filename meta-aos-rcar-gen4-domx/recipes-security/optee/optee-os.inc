@@ -1,11 +1,11 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/optee-os:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/optee-os:"
 
 DESCRIPTION = "OP-TEE OS"
 
-LICENSE = "BSD"
-LIC_FILES_CHKSUM = "file://${S}/LICENSE;md5=c1f21c4f72f372ef38a5a4aee55ec173"
+LICENSE = "BSD-2-Clause"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=c1f21c4f72f372ef38a5a4aee55ec173"
 
-SRC_URI = "git://github.com/OP-TEE/optee_os.git"
+SRC_URI = "git://github.com/OP-TEE/optee_os.git;protocol=https;branch=master"
 # optee-os 3.18.0
 SRCREV = "1ee647035939e073a2e8dddb727c0f019cc035f1"
 
@@ -14,13 +14,15 @@ SRC_URI += " \
     file://0001-plat-rcar-do-not-enable-console-for-Gen4.patch \
 "
 
+NO_GENERIC_LICENSE[optee-os] = "${S}/LICENSE" 
+
 PV = "3.18.0+git${SRCPV}"
 
 S = "${WORKDIR}/git"
 
-inherit deploy python3native
+inherit deploy
 
-DEPENDS = "python3-pycryptodome-native python3-pyelftools-native python3-cryptography-native"
+DEPENDS = "python3-cryptography-native"
 
 COMPATIBLE_MACHINE ?= "(salvator-x|h3ulcb|m3ulcb|m3nulcb|spider)"
 OPTEEMACHINE = "rcar"
@@ -38,7 +40,7 @@ export CCcore="${CC}"
 export LDcore="${LD}"
 libdir[unexport] = "1"
 
-OPTEE_ARCH_aarch64 = "arm64"
+OPTEE_ARCH:aarch64 = "arm64"
 
 EXTRA_OEMAKE = "-e MAKEFLAGS= \
     PLATFORM=rcar \
@@ -56,25 +58,5 @@ EXTRA_OEMAKE = "-e MAKEFLAGS= \
 do_configure() {
 }
 
-do_install () {
-    install -d ${D}/usr/include/optee/export-user_ta_${OPTEE_ARCH}/
-
-    for f in ${S}/out/arm-plat-rcar/export-ta_${OPTEE_ARCH}/*; do
-        cp -aR $f ${D}/usr/include/optee/export-user_ta_${OPTEE_ARCH}/
-    done
-}
-
-do_deploy() {
-    # Create deploy folder
-    install -d ${DEPLOYDIR}
-
-    # Copy TEE OS to deploy folder
-    install -m 0644 ${S}/out/arm-plat-${PLATFORM}/core/tee.elf ${DEPLOYDIR}/tee-${MACHINE}.elf
-    install -m 0644 ${S}/out/arm-plat-${PLATFORM}/core/tee-raw.bin ${DEPLOYDIR}/tee-${MACHINE}.bin
-    install -m 0644 ${S}/out/arm-plat-${PLATFORM}/core/tee.srec ${DEPLOYDIR}/tee-${MACHINE}.srec
-}
-
-addtask deploy before do_build after do_compile
-
-FILES_${PN} = ""
-FILES_${PN}-staticdev = "/usr/include/optee/"
+FILES:${PN} = ""
+FILES:${PN}-staticdev = "/usr/include/optee/"

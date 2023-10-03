@@ -3,7 +3,7 @@ DESCRIPTION = "OP-TEE Client"
 LICENSE = "BSD-2-Clause"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=69663ab153298557a59c67a60a743e5b"
 
-SRC_URI = "git://github.com/OP-TEE/optee_client.git"
+SRC_URI = "git://github.com/OP-TEE/optee_client.git;protocol=https;branch=master"
 SRC_URI += " \
     file://optee.service \
 "
@@ -16,7 +16,7 @@ inherit python3native systemd
 
 DEPENDS = "python3-cryptography-native"
 
-SYSTEMD_SERVICE_${PN} = "optee.service"
+SYSTEMD_SERVICE:${PN} = "optee.service"
 
 COMPATIBLE_MACHINE = "(salvator-x|h3ulcb|m3ulcb|m3nulcb|spider|generic-armv8-xt)"
 
@@ -29,6 +29,10 @@ EXTRA_OEMAKE = " \
     CFG_TEE_FS_PARENT_PATH=/var/optee \
 "
 
+FILES:${PN} += " \
+    ${nonarch_base_libdir} \
+"
+
 do_install () {
     # Create destination directories
     install -d ${D}/${libdir}
@@ -39,12 +43,12 @@ do_install () {
     install -m 0644 ${S}/out/export/usr/lib/libteec.so.1.0.0 ${D}/${libdir}
     install -D -p -m 0644 ${S}/out/export/usr/lib/libckteec.so.0.1 ${D}${libdir}
     # Create symbolic links
-    lnr ${D}${libdir}/libteec.so.1.0.0  ${D}${libdir}/libteec.so.1.0
-    lnr ${D}${libdir}/libteec.so.1.0.0  ${D}${libdir}/libteec.so.1
-    lnr ${D}${libdir}/libteec.so.1.0.0  ${D}${libdir}/libteec.so
+    ln -sr ${D}${libdir}/libteec.so.1.0.0  ${D}${libdir}/libteec.so.1.0
+    ln -sr ${D}${libdir}/libteec.so.1.0.0  ${D}${libdir}/libteec.so.1
+    ln -sr ${D}${libdir}/libteec.so.1.0.0  ${D}${libdir}/libteec.so
 
-    lnr ${D}${libdir}/libckteec.so.0.1 ${D}${libdir}/libckteec.so.0
-    lnr ${D}${libdir}/libckteec.so.0.1 ${D}${libdir}/libckteec.so
+    ln -sr ${D}${libdir}/libckteec.so.0.1 ${D}${libdir}/libckteec.so.0
+    ln -sr ${D}${libdir}/libckteec.so.0.1 ${D}${libdir}/libckteec.so
 
     # Install header files
     install -m 0644 ${S}/out/export/usr/include/* ${D}/${includedir}
@@ -59,5 +63,4 @@ do_install () {
     fi
 }
 
-RPROVIDES_${PN} += "optee-client"
-
+RPROVIDES:${PN} += "optee-client"
