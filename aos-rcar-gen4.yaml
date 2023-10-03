@@ -25,6 +25,25 @@ variables:
   XT_KERNEL_BRANCH: "v5.10.41/rcar-5.1.7.rc11-xt"
   XT_KERNEL_REV: "${AUTOREV}"
 
+  # Aos config
+
+  AOS_BUNDLE_IMAGE_VERSION: "2.0.0"
+  AOS_ROOTFS_REF_VERSION: "1.0.0"
+
+  AOS_UNIT_MODEL: "rcar-gen4"
+  AOS_UNIT_VERSION: "1.0"
+
+  AOS_DOM0_NODE_ID: "dom0"
+  AOS_DOMD_NODE_ID: "domd"
+  AOS_DOMD_HOST_NAME: "domd"
+
+  AOS_MAIN_NODE_ID: "%{AOS_DOMD_NODE_ID}"
+  AOS_MAIN_NODE_HOSTNAME: "%{AOS_DOMD_HOST_NAME}"
+
+  AOS_UM_COMPONENT_PREFIX: "%{AOS_UNIT_MODEL}-%{AOS_UNIT_VERSION}-%{MACHINE}-"
+
+  AOS_BASE_IMAGE: "aos-image-rcar"
+
 common_data:
   # Sources used by all yocto-based domains
   sources: &COMMON_SOURCES
@@ -118,6 +137,18 @@ common_data:
     # add the static lib to SDK toolchain
     - [SDKIMAGE_FEATURES:append, " staticdev-pkgs"]
 
+    # Aos configuration
+
+    - [AOS_UNIT_MODEL, "%{AOS_UNIT_MODEL}"]
+    - [AOS_UNIT_VERSION, "%{AOS_UNIT_VERSION}"]
+    - [AOS_MAIN_NODE_ID, "%{AOS_MAIN_NODE_ID}"]
+    - [AOS_MAIN_NODE_HOSTNAME, "%{AOS_MAIN_NODE_HOSTNAME}"]
+    - [AOS_UM_COMPONENT_PREFIX, "%{AOS_UM_COMPONENT_PREFIX}"]
+
+    # Image versions
+    - [AOS_ROOTFS_IMAGE_VERSION, "%{AOS_BUNDLE_IMAGE_VERSION}"]
+    - [AOS_BOOT_IMAGE_VERSION, "%{AOS_BUNDLE_IMAGE_VERSION}"]
+
 components:
   dom0:
     default: true
@@ -132,6 +163,10 @@ components:
       board: "%{ZEPHYR_MACHINE}"
       target: aos_core_zephyr
       work_dir: build
+      vars:
+        - "CONFIG_AOS_NODE_ID=\\\\\\\"%{AOS_DOM0_NODE_ID}\\\\\\\""
+        - "CONFIG_AOS_NODE_TYPE=\\\\\\\"rcar-gen4-dom0\\\\\\\""
+
       shields:
         - "xen_dom0"
 
@@ -158,7 +193,18 @@ components:
         - [XT_KERNEL_REV, "%{XT_KERNEL_REV}"]
         - [XT_OP_TEE_FLAVOUR, "%{XT_OPTEE_FLAVOR}"]
 
-      build_target: "rcar-image-minimal"
+        # Add boot script
+        - [EXTRA_IMAGEDEPENDS:append, " boot-script"]
+
+        # Requires to properly generate Aos FOTA
+        - [IMAGE_BASENAME, "%{AOS_BASE_IMAGE}"]
+
+        # Aos configuration
+        - [AOS_NODE_ID, "%{AOS_DOMD_NODE_ID}"]
+        - [AOS_NODE_HOSTNAME, "%{AOS_DOMD_HOST_NAME}"]
+        - [AOS_VIS_DATA_PROVIDER, "%{AOS_VIS_DATA_PROVIDER}"]
+
+      build_target: "%{AOS_BASE_IMAGE}"
       layers:
         - "../poky/meta"
         - "../poky/meta-poky"
@@ -181,13 +227,15 @@ components:
         - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-domd"
 
       target_images:
+        - "tmp/deploy/images/%{MACHINE}/Image-%{MACHINE}.bin"
         - "tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
         - "tmp/deploy/images/%{MACHINE}/xenpolicy-%{MACHINE}"
         - "tmp/deploy/images/%{MACHINE}/%{XT_XEN_DTB_NAME}"
-        - "tmp/deploy/images/%{MACHINE}/rcar-image-minimal-%{MACHINE}.ext4"
-        - "tmp/work-shared/rcar-image-minimal-%{MACHINE}/rootfs/var"
-        - "tmp/deploy/images/%{MACHINE}/Image-%{MACHINE}.bin"
         - "tmp/deploy/images/%{MACHINE}/aos-image-initramfs-%{MACHINE}.cpio.gz"
+        - "tmp/deploy/images/%{MACHINE}/%{AOS_BASE_IMAGE}-%{MACHINE}.ext4"
+        - "tmp/deploy/images/%{MACHINE}/aos/boot/version"
+        - "tmp/work-shared/%{AOS_BASE_IMAGE}-%{MACHINE}/rootfs/var"
+        - "tmp/deploy/images/%{MACHINE}/boot.uImage"
 
 images:
   full:
@@ -206,6 +254,8 @@ images:
           "zephyr.bin": "%{DOM0_BUILD_DIR}/build/zephyr/zephyr.bin"
           "linux-domd": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image-%{MACHINE}.bin"
           "initramfs-domd": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/aos-image-initramfs-%{MACHINE}.cpio.gz"
+          "boot.uImage": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/boot.uImage"
+          "aos/version": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/aos/boot/version"
 
       boot_b:
         gpt_type: 21686148-6449-6E6F-744E-656564454649 # BIOS boot partition (kinda...)
@@ -218,6 +268,8 @@ images:
           "zephyr.bin": "%{DOM0_BUILD_DIR}/build/zephyr/zephyr.bin"
           "linux-domd": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image-%{MACHINE}.bin"
           "initramfs-domd": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/aos-image-initramfs-%{MACHINE}.cpio.gz"
+          "boot.uImage": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/boot.uImage"
+          "aos/version": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/aos/boot/version"
 
       boot_env:
         gpt_type: 21686148-6449-6E6F-744E-656564454649 # BIOS boot partition (kinda...)
@@ -227,14 +279,14 @@ images:
       domd_rootfs:
         gpt_type: B921B045-1DF0-41C3-AF44-4C6F280D3FAE # Linux aarch64 root
         type: raw_image
-        image_path: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/rcar-image-minimal-spider.ext4"
+        image_path: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{AOS_BASE_IMAGE}-%{MACHINE}.ext4"
 
       domd_var:
         gpt_type: B921B045-1DF0-41C3-AF44-4C6F280D3FAE # Linux aarch64 root
         type: ext4
         size: 512 MiB
         items:
-          "/": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/work-shared/rcar-image-minimal-%{MACHINE}/rootfs/var"
+          "/": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/work-shared/%{AOS_BASE_IMAGE}-%{MACHINE}/rootfs/var"
 
       domd_aos:
         gpt_type: CA7D7CCB-63ED-4C53-861C-1742536059CC # LUKS partition
@@ -249,9 +301,31 @@ parameters:
       default: true
       overrides:
         variables:
-          VIS_DATA_PROVIDER: "renesassimulatoradapter"
+          AOS_VIS_DATA_PROVIDER: "renesassimulatoradapter"
 
     telemetryemulator:
       overrides:
         variables:
-          VIS_DATA_PROVIDER: "telemetryemulatoradapter"
+          AOS_VIS_DATA_PROVIDER: "telemetryemulatoradapter"
+
+  NODE_TYPE:
+    desc: "Node type to build"
+    "single":
+      default: true
+      overrides:
+        components:
+          domd:
+            builder:
+              conf:
+                - [AOS_SM_NODES, "%{AOS_DOM0_NODE_ID} %{AOS_DOMD_NODE_ID}"]
+                - [AOS_HOSTS, "127.0.0.1=wwwivi"]
+
+    "main":
+      overrides:
+        variables:
+          UNIT_MODEL: "rcar-multinode-zephyr"
+          AOS_MAIN_NODE_ID: "gen4-domd"
+          AOS_MAIN_NODE_HOSTNAME: "domd.gen4"
+          AOS_DOM0_NODE_ID: "gen4-dom0"
+          AOS_DOMD_NODE_ID: "gen4-domd"
+          AOS_UM_COMPONENT_PREFIX: "%{AOS_UNIT_MODEL}-%{AOS_UNIT_VERSION}-gen4-"
