@@ -49,7 +49,10 @@ common_data:
   sources: &COMMON_SOURCES
     - type: git
       url: "https://git.yoctoproject.org/poky"
-      rev: "232b5533d"
+      # We can't use dunfell branch, due to conlict with openssl, which revision
+      # is fixed to 1.1.1o, and poky will try to apply patches for newer version.
+      # So, we have to use commit "386041424 efivar: change branch name to main".
+      rev: "386041424"
 
     - type: git
       url: "https://git.openembedded.org/meta-openembedded"
