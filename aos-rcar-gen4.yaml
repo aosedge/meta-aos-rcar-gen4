@@ -247,6 +247,27 @@ components:
         - "tmp/deploy/images/%{MACHINE}/aos/boot/version"
         - "tmp/work-shared/%{AOS_BASE_IMAGE}-%{MACHINE}/rootfs/var"
         - "tmp/deploy/images/%{MACHINE}/boot.uImage"
+        # firmware
+        - "tmp/deploy/images/%{MACHINE}/bl31-%{MACHINE}.bin"
+        - "tmp/deploy/images/%{MACHINE}/bl31-%{MACHINE}.srec"
+        - "tmp/deploy/images/%{MACHINE}/tee-%{MACHINE}.bin"
+        - "tmp/deploy/images/%{MACHINE}/tee-%{MACHINE}.srec"
+        - "tmp/deploy/images/%{MACHINE}/u-boot-elf-%{MACHINE}.srec"
+        - "tmp/deploy/images/%{MACHINE}/u-boot-%{MACHINE}.bin"
+
+  pack-ipl:
+    build-dir: "."
+    builder:
+      type: archive
+      base_dir: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}"
+      name: "output/ipl/ipl-%{MACHINE}.tar.bz2"
+      items:
+        - "bl31-%{MACHINE}.bin"
+        - "bl31-%{MACHINE}.srec"
+        - "tee-%{MACHINE}.bin"
+        - "tee-%{MACHINE}.srec"
+        - "u-boot-elf-%{MACHINE}.srec"
+        - "u-boot-%{MACHINE}.bin"
 
 images:
   full:
