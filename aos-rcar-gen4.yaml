@@ -225,6 +225,7 @@ components:
         - "../meta-xt-common/meta-xt-domx"
         - "../meta-xt-common/meta-xt-driver-domain"
         - "../meta-xt-rcar/meta-xt-gateway/meta-xt-domd-gen4"
+        - "../meta-xt-rcar/meta-xt-gateway/meta-xt-domx-gen4"
         - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-domx"
         - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-driver-domain"
         - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-domd"
