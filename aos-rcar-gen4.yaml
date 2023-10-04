@@ -30,18 +30,6 @@ variables:
   AOS_BUNDLE_IMAGE_VERSION: "2.0.0"
   AOS_ROOTFS_REF_VERSION: "1.0.0"
 
-  AOS_UNIT_MODEL: "rcar-gen4"
-  AOS_UNIT_VERSION: "1.0"
-
-  AOS_DOM0_NODE_ID: "dom0"
-  AOS_DOMD_NODE_ID: "domd"
-  AOS_DOMD_HOST_NAME: "domd"
-
-  AOS_MAIN_NODE_ID: "%{AOS_DOMD_NODE_ID}"
-  AOS_MAIN_NODE_HOSTNAME: "%{AOS_DOMD_HOST_NAME}"
-
-  AOS_UM_COMPONENT_PREFIX: "%{AOS_UNIT_MODEL}-%{AOS_UNIT_VERSION}-%{MACHINE}-"
-
   AOS_BASE_IMAGE: "aos-image-rcar"
 
 common_data:
@@ -152,8 +140,8 @@ common_data:
 
     - [AOS_UNIT_MODEL, "%{AOS_UNIT_MODEL}"]
     - [AOS_UNIT_VERSION, "%{AOS_UNIT_VERSION}"]
-    - [AOS_MAIN_NODE_ID, "%{AOS_MAIN_NODE_ID}"]
-    - [AOS_MAIN_NODE_HOSTNAME, "%{AOS_MAIN_NODE_HOSTNAME}"]
+    - [AOS_MAIN_NODE_ID, "gen4-domd"]
+    - [AOS_MAIN_NODE_HOSTNAME, "domd.gen4"]
     - [AOS_UM_COMPONENT_PREFIX, "%{AOS_UM_COMPONENT_PREFIX}"]
 
     # Image versions
@@ -175,7 +163,7 @@ components:
       target: aos_core_zephyr
       work_dir: build
       vars:
-        - "CONFIG_AOS_NODE_ID=\\\\\\\"%{AOS_DOM0_NODE_ID}\\\\\\\""
+        - "CONFIG_AOS_NODE_ID=\\\\\\\"gen4-dom0\\\\\\\""
         - "CONFIG_AOS_NODE_TYPE=\\\\\\\"rcar-gen4-dom0\\\\\\\""
 
       shields:
@@ -211,8 +199,9 @@ components:
         - [IMAGE_BASENAME, "%{AOS_BASE_IMAGE}"]
 
         # Aos configuration
-        - [AOS_NODE_ID, "%{AOS_DOMD_NODE_ID}"]
-        - [AOS_NODE_HOSTNAME, "%{AOS_DOMD_HOST_NAME}"]
+        - [AOS_NODE_ID, "gen4-domd"]
+        - [AOS_NODE_TYPE, "rcar-gen4-domd"]
+        - [AOS_NODE_HOSTNAME, "domd.gen4"]
         - [AOS_VIS_DATA_PROVIDER, "%{AOS_VIS_DATA_PROVIDER}"]
 
       build_target: "%{AOS_BASE_IMAGE}"
@@ -345,19 +334,31 @@ parameters:
     "single":
       default: true
       overrides:
+        variables:
+          AOS_UNIT_MODEL: "rcar-gen4"
+          AOS_UNIT_VERSION: "1.0"
+          AOS_UM_COMPONENT_PREFIX: "%{AOS_UNIT_MODEL}-%{AOS_UNIT_VERSION}-%{MACHINE}-"
+
         components:
           domd:
             builder:
               conf:
-                - [AOS_SM_NODES, "%{AOS_DOM0_NODE_ID} %{AOS_DOMD_NODE_ID}"]
+                - [AOS_SM_NODES, "gen4-dom0 gen4-domd"]
                 - [AOS_HOSTS, "127.0.0.1=wwwivi"]
 
     "main":
       overrides:
         variables:
-          UNIT_MODEL: "rcar-multinode-zephyr"
-          AOS_MAIN_NODE_ID: "gen4-domd"
-          AOS_MAIN_NODE_HOSTNAME: "domd.gen4"
-          AOS_DOM0_NODE_ID: "gen4-dom0"
-          AOS_DOMD_NODE_ID: "gen4-domd"
+          AOS_UNIT_MODEL: "rcar-multinode-zephyr"
+          AOS_UNIT_VERSION: "1.0"
           AOS_UM_COMPONENT_PREFIX: "%{AOS_UNIT_MODEL}-%{AOS_UNIT_VERSION}-gen4-"
+
+        components:
+          domd:
+            builder:
+              conf:
+                - [AOS_SM_NODES, "gen4-dom0 gen4-domd gen3-dom0 gen3-domd"]
+                - [AOS_UM_NODES, "gen4-domd gen3-domd"]
+                - [AOS_IAM_NODES, "gen4-domd gen3-domd"]
+                - [AOS_IAM_HOSTNAMES, "domd.gen4 domd.gen3"]
+                - [AOS_HOSTS, "10.0.0.1=wwwivi 10.0.0.1=domd"]
