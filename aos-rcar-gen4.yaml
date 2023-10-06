@@ -284,6 +284,70 @@ components:
           libvis-layer:
             target: "aos-libvis-layer"
 
+  fota:
+    builder:
+      type: custom_script
+      work_dir: "fota"
+      script: "yocto/meta-aos/scripts/fota_builder.py"
+      args: "-v"
+      target_images:
+        - "output/fota/%{AOS_UM_COMPONENT_PREFIX}%{AOS_BUNDLE_IMAGE_VERSION}.tar"
+
+      additional_deps:
+        - "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
+        - "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xenpolicy-%{MACHINE}"
+        - "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{XT_XEN_DTB_NAME}"
+        - "%{DOM0_BUILD_DIR}/build/zephyr/zephyr.bin"
+        - "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image-%{MACHINE}.bin"
+        - "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/aos-image-initramfs-%{MACHINE}.cpio.gz"
+        - "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/boot.uImage"
+        - "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/aos/boot/version"
+
+      components:
+        boot:
+          componentType: "%{AOS_UM_COMPONENT_PREFIX}boot"
+          enabled: true
+          method: "raw"
+          description: "Boot image"
+          vendorVersion: "%{AOS_BUNDLE_IMAGE_VERSION}"
+          fileName: "%{AOS_UM_COMPONENT_PREFIX}boot-%{AOS_BUNDLE_IMAGE_VERSION}.gz"
+          partition:
+            gpt_type: 21686148-6449-6E6F-744E-656564454649 # BIOS boot partition (kinda...)
+            type: ext4
+            size: 256 MiB
+            items:
+              "xen": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
+              "xenpolicy": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xenpolicy-%{MACHINE}"
+              "xen.dtb": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{XT_XEN_DTB_NAME}"
+              "zephyr.bin": "%{DOM0_BUILD_DIR}/build/zephyr/zephyr.bin"
+              "linux-domd": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image-%{MACHINE}.bin"
+              "initramfs-domd": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/aos-image-initramfs-%{MACHINE}.cpio.gz"
+              "boot.uImage": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/boot.uImage"
+              "aos/version": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/aos/boot/version"
+
+        rootfs-full:
+          componentType: "%{AOS_UM_COMPONENT_PREFIX}domd"
+          enabled: true
+          method: "overlay"
+          yocto_dir: "%{YOCTOS_WORK_DIR}"
+          build_dir: "%{DOMD_BUILD_DIR}"
+          type: "full"
+          description: "gen3-domd rootfs image"
+          vendorVersion: "%{AOS_BUNDLE_IMAGE_VERSION}"
+          fileName: "%{AOS_UM_COMPONENT_PREFIX}rootfs-full-%{AOS_BUNDLE_IMAGE_VERSION}.squashfs"
+
+        rootfs-incremental:
+          componentType: "%{AOS_UM_COMPONENT_PREFIX}rootfs"
+          enabled: false
+          method: "overlay"
+          yocto_dir: "%{YOCTOS_WORK_DIR}"
+          build_dir: "%{DOMD_BUILD_DIR}"
+          type: "incremental"
+          description: "gen3-domd rootfs image"
+          vendorVersion: "%{AOS_BUNDLE_IMAGE_VERSION}"
+          requiredVersion: "%{AOS_ROOTFS_REF_VERSION}"
+          fileName: "%{AOS_UM_COMPONENT_PREFIX}rootfs-incremental-%{AOS_BUNDLE_IMAGE_VERSION}.squashfs"
+
 images:
   full:
     type: gpt
