@@ -1,0 +1,48 @@
+{
+    "nodes": [
+        {
+            "nodeType": "rcar-gen4-domd",
+            "priority": 100
+        },
+        {
+            "nodeType": "rcar-gen4-dom0",
+            "priority": 51
+        },
+        {
+            "nodeType": "rcar-gen3-domd",
+            "priority": 41,
+            "labels": [
+                "gen3"
+            ]
+        },
+        {
+            "nodeType": "rcear-gen3-dom0",
+            "priority": 20,
+            "labels": [
+                "xrunSupport_gen3"
+            ],
+            "resources": [
+                {
+                    "name": "gen3-dom0-resource"
+                }
+            ]
+        }
+    ],
+    "components": [
+        {
+            "id": "rcar-multinode-zephyr-1.0-gen4-boot"
+        },
+        {
+            "id": "rcar-multinode-zephyr-1.0-gen4-domd"
+        },
+        {
+            "id": "rcar-multinode-zephyr-1.0-gen4-rh850"
+        },
+        {
+            "id": "rcar-multinode-zephyr-1.0-gen3-boot"
+        },
+        {
+            "id": "rcar-multinode-zephyr-1.0-gen3-domd"
+        }
+    ]
+}
