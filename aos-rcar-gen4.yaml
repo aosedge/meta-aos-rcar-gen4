@@ -233,8 +233,8 @@ components:
         - "tmp/deploy/images/%{MACHINE}/%{XT_XEN_DTB_NAME}"
         - "tmp/deploy/images/%{MACHINE}/aos-image-initramfs-%{MACHINE}.cpio.gz"
         - "tmp/deploy/images/%{MACHINE}/%{AOS_BASE_IMAGE}-%{MACHINE}.ext4"
+        - "tmp/deploy/images/%{MACHINE}/%{AOS_BASE_IMAGE}-%{MACHINE}-var.ext4"
         - "tmp/deploy/images/%{MACHINE}/aos/boot/version"
-        - "tmp/work-shared/%{AOS_BASE_IMAGE}-%{MACHINE}/rootfs/var"
         - "tmp/deploy/images/%{MACHINE}/boot.uImage"
         # firmware
         - "tmp/deploy/images/%{MACHINE}/bl31-%{MACHINE}.bin"
@@ -404,10 +404,8 @@ images:
 
       domd_var:
         gpt_type: B921B045-1DF0-41C3-AF44-4C6F280D3FAE # Linux aarch64 root
-        type: ext4
-        size: 512 MiB
-        items:
-          "/": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/work-shared/%{AOS_BASE_IMAGE}-%{MACHINE}/rootfs/var"
+        type: raw_image
+        image_path: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{AOS_BASE_IMAGE}-%{MACHINE}-var.ext4"
 
       domd_aos:
         gpt_type: CA7D7CCB-63ED-4C53-861C-1742536059CC # LUKS partition
