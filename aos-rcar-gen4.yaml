@@ -332,21 +332,31 @@ components:
           yocto_dir: "%{YOCTOS_WORK_DIR}"
           build_dir: "%{DOMD_BUILD_DIR}"
           type: "full"
-          description: "gen3-domd rootfs image"
+          description: "gen4-domd rootfs image"
           vendorVersion: "%{AOS_BUNDLE_IMAGE_VERSION}"
           fileName: "%{AOS_UM_COMPONENT_PREFIX}rootfs-full-%{AOS_BUNDLE_IMAGE_VERSION}.squashfs"
 
         rootfs-incremental:
-          componentType: "%{AOS_UM_COMPONENT_PREFIX}rootfs"
+          componentType: "%{AOS_UM_COMPONENT_PREFIX}domd"
           enabled: false
           method: "overlay"
           yocto_dir: "%{YOCTOS_WORK_DIR}"
           build_dir: "%{DOMD_BUILD_DIR}"
           type: "incremental"
-          description: "gen3-domd rootfs image"
+          description: "gen4-domd rootfs image"
           vendorVersion: "%{AOS_BUNDLE_IMAGE_VERSION}"
           requiredVersion: "%{AOS_ROOTFS_REF_VERSION}"
           fileName: "%{AOS_UM_COMPONENT_PREFIX}rootfs-incremental-%{AOS_BUNDLE_IMAGE_VERSION}.squashfs"
+
+        rh850:
+          componentType: "%{AOS_UM_COMPONENT_PREFIX}rh850"
+          enabled: false
+          method: "custom"
+          file: "path/to/rh850.img"
+          description: "gen4-rh850 image"
+          vendorVersion: "%{AOS_BUNDLE_IMAGE_VERSION}"
+          requiredVersion: "%{AOS_ROOTFS_REF_VERSION}"
+          fileName: "%{AOS_UM_COMPONENT_PREFIX}rh850-%{AOS_BUNDLE_IMAGE_VERSION}.img"
 
 images:
   full:
