@@ -16,7 +16,7 @@
             ]
         },
         {
-            "nodeType": "rcear-gen3-dom0",
+            "nodeType": "rcar-gen3-dom0",
             "priority": 20,
             "labels": [
                 "xrunSupport_gen3"
