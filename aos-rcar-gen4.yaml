@@ -98,6 +98,9 @@ common_data:
     # Do not install kernel image to rootfs to decrease initrd size
     - ["RDEPENDS_${KERNEL_PACKAGE_NAME}-base", ""]
 
+    # Make logs persistent
+    - [VOLATILE_LOG_DIR, "no"]
+
     # Generate ext4 image files
     - [IMAGE_FSTYPES:append, " ext4"]
 
