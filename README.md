@@ -52,7 +52,8 @@ parameters. You can check them with `--help-config` command line option:
 
 ```sh
 moulin aos-rcar-gen4.yaml --help-config        
-usage: moulin aos-rcar-gen4.yaml [--VIS_DATA_PROVIDER {renesassimulator,telemetryemulator}] [--NODE_TYPE {single,main}]
+usage: moulin aos-rcar-gen4.yaml [--VIS_DATA_PROVIDER {renesassimulator,telemetryemulator}]
+                                 [--NODE_TYPE {single,main}]
 
 Config file description: Aos development setup for Renesas RCAR Gen4 hardware
 
@@ -107,7 +108,7 @@ using BSP image over TFTP+NFS. See `R-Car S4 Startup Guide` for details. Once, t
 into NFS folder and copy the image into UFS, using the following command on S4 board:
 
 ```sh
-dd if=/gen4.img of=/dev/sda bs=32M
+dd if=/full.img of=/dev/sda bs=32M
 ```
 
 Alternatively, [prod-devel-rcar-gen4](https://github.com/xen-troops/meta-xt-prod-devel-rcar-gen4) build could be used
