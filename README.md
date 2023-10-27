@@ -148,5 +148,5 @@ ifconfig br0 up
 
 ## FOTA & Layers
 
-* [Generate FOTA bundles](https://github.com/aoscloud/meta-aos-vm/doc/fota.md)
-* [Generate layers](https://github.com/aoscloud/meta-aos-vm/doc/layers.md)
+* [Generate FOTA bundles](https://github.com/aoscloud/meta-aos-vm/blob/main/doc/fota.md)
+* [Generate layers](https://github.com/aoscloud/meta-aos-vm/blob/main/doc/layers.md)
