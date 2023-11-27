@@ -15,8 +15,10 @@ features:
 ## Requirements
 
 1. Ubuntu 18.0+ or any other Linux distribution which is supported by Poky/OE
+
 2. Development packages for Yocto. Refer to
 [Yocto manual](https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#brief-build-system-packages)
+
 3. You need `Moulin` installed in your PC. Recommended way is to install it for your user only:
 
     ```sh
@@ -24,6 +26,7 @@ features:
     ```
 
     Make sure that your `PATH` environment variable includes `${HOME}/.local/bin`
+
 4. Ninja build system on Ubuntu:
 
     ```sh
@@ -32,6 +35,10 @@ features:
   
 5. Install Zephyr OS dependencies and SDK:
 [Getting Started Guide](https://docs.zephyrproject.org/latest/develop/getting_started/index.html#)
+
+6. Install [protobuf compiler](https://grpc.io/docs/protoc-installation/#install-pre-compiled-binaries-any-os) from
+pre-compiled binaries. The verified protobuf compiler version is
+[v22.3](https://github.com/protocolbuffers/protobuf/releases/tag/v22.3).
 
 ## Create image
 
