@@ -26,9 +26,20 @@ variables:
   XT_KERNEL_REV: "${AUTOREV}"
 
   # Aos config
+  AOS_UNIT_MODEL: "rcar-multinode-zephyr"
+  AOS_UNIT_VERSION: "1.0"
 
-  AOS_BUNDLE_IMAGE_VERSION: "2.0.1-beta.1"
+  AOS_MAIN_NODE_ID: "main-domd"
+
+  AOS_DOM0_NODE_ID: "main-dom0"
+  AOS_DOM0_NODE_TYPE: "rcar-main-dom0"
+
+  AOS_DOMD_NODE_ID: "main-domd"
+  AOS_DOMD_NODE_TYPE: "rcar-main-domd"
+
+  AOS_BUNDLE_IMAGE_VERSION: "2.1.0-beta.1"
   AOS_ROOTFS_REF_VERSION: "2.0.0"
+  AOS_UM_COMPONENT_PREFIX: "%{AOS_UNIT_MODEL}-%{AOS_UNIT_VERSION}-%{MACHINE}-"
 
   AOS_BASE_IMAGE: "aos-image-rcar"
 
@@ -143,8 +154,7 @@ common_data:
 
     - [AOS_UNIT_MODEL, "%{AOS_UNIT_MODEL}"]
     - [AOS_UNIT_VERSION, "%{AOS_UNIT_VERSION}"]
-    - [AOS_MAIN_NODE_ID, "gen4-domd"]
-    - [AOS_MAIN_NODE_HOSTNAME, "domd.gen4"]
+    - [AOS_MAIN_NODE_ID, "%{AOS_MAIN_NODE_ID}"]
     - [AOS_UM_COMPONENT_PREFIX, "%{AOS_UM_COMPONENT_PREFIX}"]
 
     # Image versions
@@ -166,8 +176,8 @@ components:
       target: aos_core_zephyr
       work_dir: build
       vars:
-        - 'CONFIG_AOS_NODE_ID="gen4-dom0"'
-        - 'CONFIG_AOS_NODE_TYPE="rcar-gen4-dom0"'
+        - 'CONFIG_AOS_NODE_ID="%{AOS_DOM0_NODE_ID}"'
+        - 'CONFIG_AOS_NODE_TYPE="%{AOS_DOM0_NODE_TYPE}"'
 
       shields:
         - "xen_dom0"
@@ -202,10 +212,8 @@ components:
         - [IMAGE_BASENAME, "%{AOS_BASE_IMAGE}"]
 
         # Aos configuration
-        - [AOS_NODE_ID, "gen4-domd"]
-        - [AOS_NODE_TYPE, "rcar-gen4-domd"]
-        - [AOS_NODE_HOSTNAME, "domd.gen4"]
-        - [AOS_VIS_DATA_PROVIDER, "%{AOS_VIS_DATA_PROVIDER}"]
+        - [AOS_NODE_ID, "%{AOS_DOMD_NODE_ID}"]
+        - [AOS_NODE_TYPE, "%{AOS_DOMD_NODE_TYPE}"]
 
       build_target: "%{AOS_BASE_IMAGE}"
       layers:
@@ -283,8 +291,10 @@ components:
         items:
           nodejs-layer:
             target: "aos-nodejs-layer"
+
           pylibs-layer:
             target: "aos-pylibs-layer"
+
           libvis-layer:
             target: "aos-libvis-layer"
 
@@ -442,29 +452,37 @@ parameters:
       overrides:
         variables:
           AOS_UNIT_MODEL: "rcar-gen4"
-          AOS_UNIT_VERSION: "1.0"
-          AOS_UM_COMPONENT_PREFIX: "%{AOS_UNIT_MODEL}-%{AOS_UNIT_VERSION}-%{MACHINE}-"
 
         components:
           domd:
             builder:
               conf:
-                - [AOS_SM_NODES, "gen4-dom0 gen4-domd"]
+                - [AOS_SM_NODES, "main-domd main-dom0"]
                 - [AOS_HOSTS, "127.0.0.1=wwwivi"]
+                - [AOS_VIS_DATA_PROVIDER, "%{AOS_VIS_DATA_PROVIDER}"]
 
     "main":
       overrides:
-        variables:
-          AOS_UNIT_MODEL: "rcar-multinode-zephyr"
-          AOS_UNIT_VERSION: "1.0"
-          AOS_UM_COMPONENT_PREFIX: "%{AOS_UNIT_MODEL}-%{AOS_UNIT_VERSION}-gen4-"
-
         components:
           domd:
             builder:
               conf:
-                - [AOS_SM_NODES, "gen4-dom0 gen4-domd gen3-dom0 gen3-domd"]
-                - [AOS_UM_NODES, "gen4-domd gen3-domd"]
-                - [AOS_IAM_NODES, "gen4-domd gen3-domd"]
-                - [AOS_IAM_HOSTNAMES, "domd.gen4 domd.gen3"]
-                - [AOS_HOSTS, "10.0.0.1=wwwivi 10.0.0.1=domd"]
+                - [
+                    AOS_SM_NODES,
+                    "main-domd main-dom0 secondary-domd secondary-dom0",
+                  ]
+                - [AOS_UM_NODES, "main-domd secondary-domd"]
+                - [AOS_IAM_NODES, "main-domd secondary-domd"]
+                - [
+                    AOS_HOSTS,
+                    "10.0.0.1=wwwivi 10.0.0.1=main-domd 10.0.0.2=secondary-domd",
+                  ]
+                - [AOS_VIS_DATA_PROVIDER, "%{AOS_VIS_DATA_PROVIDER}"]
+
+    "secondary":
+      overrides:
+        variables:
+          AOS_DOM0_NODE_ID: "secondary-dom0"
+          AOS_DOM0_NODE_TYPE: "rcar-secondary-dom0"
+          AOS_DOMD_NODE_ID: "secondary-domd"
+          AOS_DOMD_NODE_TYPE: "rcar-secondary-domd"
