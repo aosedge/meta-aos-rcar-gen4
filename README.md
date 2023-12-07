@@ -2,16 +2,6 @@
 
 This repository contains Renesas R-Car Gen4-specific Yocto layers for AosEdge distro.
 
-## Status
-
-This is a release 2.0.0 of AosEdge development product for the S4 Spider board. This release provides the following
-features:
-
-* Dom0 with Zephyr OS to run unikernels as xen domains using xrun
-* DomD with Linux OS to run container based Aos services using crun
-* Generating FOTA bundles
-* Generating Aos layers
-
 ## Requirements
 
 1. Ubuntu 18.0+ or any other Linux distribution which is supported by Poky/OE
