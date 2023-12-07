@@ -1,48 +1,49 @@
 {
     "nodes": [
         {
-            "nodeType": "rcar-gen4-domd",
-            "priority": 100
-        },
-        {
-            "nodeType": "rcar-gen4-dom0",
-            "priority": 51
-        },
-        {
-            "nodeType": "rcar-gen3-domd",
-            "priority": 41,
+            "nodeType": "rcar-main-domd",
+            "priority": 3,
             "labels": [
-                "gen3"
+                "main-domd"
             ]
         },
         {
-            "nodeType": "rcar-gen3-dom0",
-            "priority": 20,
+            "nodeType": "rcar-main-dom0",
+            "priority": 2,
             "labels": [
-                "xrunSupport_gen3"
-            ],
-            "resources": [
-                {
-                    "name": "gen3-dom0-resource"
-                }
+                "main-dom0"
+            ]
+        },
+        {
+            "nodeType": "rcar-secondary-domd",
+            "priority": 1,
+            "labels": [
+                "secondary-domd"
+            ]
+        },
+        {
+            "nodeType": "rcar-secondary-dom0",
+            "priority": 0,
+            "labels": [
+                "secondary-dom0"
             ]
         }
     ],
     "components": [
         {
-            "id": "rcar-multinode-zephyr-1.0-gen4-boot"
+            "id": "rcar-multinode-zephyr-1.0-spider-boot"
         },
         {
-            "id": "rcar-multinode-zephyr-1.0-gen4-domd"
+            "id": "rcar-multinode-zephyr-1.0-spider-domd"
         },
         {
-            "id": "rcar-multinode-zephyr-1.0-gen4-rh850"
+            "id": "rcar-multinode-zephyr-1.0-spider-rh850"
         },
         {
-            "id": "rcar-multinode-zephyr-1.0-gen3-boot"
+            "id": "rcar-multinode-zephyr-1.0-h3ulcb-boot"
         },
         {
-            "id": "rcar-multinode-zephyr-1.0-gen3-domd"
+            "id": "rcar-multinode-zephyr-1.0-h3ulcb-domd"
         }
     ]
 }

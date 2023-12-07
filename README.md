@@ -67,7 +67,7 @@ Config file description: Aos development setup for Renesas RCAR Gen4 hardware
 options:
   --VIS_DATA_PROVIDER {renesassimulator,telemetryemulator}
                         Specifies plugin for VIS automotive data
-  --NODE_TYPE {single,main}
+  --NODE_TYPE {single,main,secondary}
                         Node type to build
 
 ```
