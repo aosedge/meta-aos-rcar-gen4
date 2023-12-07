@@ -19,6 +19,7 @@ IMAGE_INSTALL += " \
     xen-network \
     dnsmasq \
     openssh \
+    u-boot-domd \
 "
 
 IMAGE_INSTALL += " iproute2 iproute2-tc tcpdump nvme-cli"
