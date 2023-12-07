@@ -418,7 +418,7 @@ images:
       domd_aos:
         gpt_type: CA7D7CCB-63ED-4C53-861C-1742536059CC # LUKS partition
         type: empty
-        size: 2048 MiB
+        size: 4096 MiB
 
 parameters:
   # Aos VIS data provider
