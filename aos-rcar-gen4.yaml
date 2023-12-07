@@ -44,35 +44,35 @@ common_data:
 
     - type: git
       url: "https://git.openembedded.org/meta-openembedded"
-      rev: "300be9753"
+      rev: "dunfell"
 
     - type: git
       url: "https://git.yoctoproject.org/meta-virtualization"
-      rev: "35c72377"
+      rev: "dunfell"
 
     - type: git
       url: "git://git.yoctoproject.org/meta-security"
-      rev: "eb631c1"
+      rev: "dunfell"
 
     - type: git
       url: "git://git.yoctoproject.org/meta-selinux"
-      rev: "1924d97"
+      rev: "dunfell"
 
     - type: git
       url: "https://github.com/aoscloud/meta-aos"
       rev: "develop"
 
     - type: git
-      url: https://github.com/renesas-rcar/meta-renesas.git
-      rev: "61b40143"
+      url: "https://github.com/renesas-rcar/meta-renesas.git"
+      rev: "dunfell"
 
     - type: git
       url: "https://github.com/xen-troops/meta-xt-common"
-      rev: "a36260c"
+      rev: "dunfell"
 
     - type: git
       url: "https://github.com/xen-troops/meta-xt-rcar"
-      rev: "4ced34c"
+      rev: "dunfell"
 
     - type: git
       url: "https://github.com/aoscloud/meta-aos-rcar-gen4"
@@ -158,7 +158,7 @@ components:
     sources:
       - type: west
         url: "https://github.com/aoscloud/aos_core_zephyr.git"
-        rev: "v0.2.1"
+        rev: "develop"
 
     builder:
       type: zephyr
