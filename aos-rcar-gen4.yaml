@@ -178,12 +178,15 @@ components:
       vars:
         - 'CONFIG_AOS_NODE_ID="%{AOS_DOM0_NODE_ID}"'
         - 'CONFIG_AOS_NODE_TYPE="%{AOS_DOM0_NODE_TYPE}"'
+        - 'CONFIG_DOMD_UBOOT_PATH="../../../%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/u-boot-domd.bin"'
+        - 'CONFIG_DOMD_DTB_PATH="../../../%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{XT_DOMD_DTB_NAME}"'
 
       shields:
         - "xen_dom0"
 
       additional_deps:
-        - "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image-%{MACHINE}.bin"
+        - "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/u-boot-domd.bin"
+        - "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{XT_DOMD_DTB_NAME}"
 
       target_images:
         - "build/zephyr/zephyr.bin"
@@ -248,6 +251,8 @@ components:
         - "tmp/deploy/images/%{MACHINE}/%{AOS_BASE_IMAGE}-%{MACHINE}-var.ext4"
         - "tmp/deploy/images/%{MACHINE}/aos/boot/version"
         - "tmp/deploy/images/%{MACHINE}/boot.uImage"
+        - "tmp/deploy/images/%{MACHINE}/u-boot-domd.bin"
+        - "tmp/deploy/images/%{MACHINE}/%{XT_DOMD_DTB_NAME}"
         # firmware
         - "tmp/deploy/images/%{MACHINE}/bl31-%{MACHINE}.bin"
         - "tmp/deploy/images/%{MACHINE}/bl31-%{MACHINE}.srec"
