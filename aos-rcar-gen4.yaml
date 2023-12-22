@@ -29,13 +29,13 @@ variables:
   AOS_UNIT_MODEL: "rcar-multinode-zephyr"
   AOS_UNIT_VERSION: "1.0"
 
-  AOS_MAIN_NODE_ID: "main-domd"
+  AOS_MAIN_NODE_ID: "Node0-QM"
 
-  AOS_DOM0_NODE_ID: "main-dom0"
-  AOS_DOM0_NODE_TYPE: "rcar-main-dom0"
+  AOS_DOM0_NODE_ID: "Node0-ASIL"
+  AOS_DOM0_NODE_TYPE: "Node0-Zephyr"
 
-  AOS_DOMD_NODE_ID: "main-domd"
-  AOS_DOMD_NODE_TYPE: "rcar-main-domd"
+  AOS_DOMD_NODE_ID: "Node0-QM"
+  AOS_DOMD_NODE_TYPE: "Node0-Linux"
 
   AOS_BUNDLE_IMAGE_VERSION: "2.1.0-beta.1"
   AOS_ROOTFS_REF_VERSION: "2.0.0"
@@ -474,20 +474,20 @@ parameters:
               conf:
                 - [
                     AOS_SM_NODES,
-                    "main-domd main-dom0 secondary-domd secondary-dom0",
+                    "Node0-QM Node0-ASIL Node1-QM Node1-ASIL",
                   ]
-                - [AOS_UM_NODES, "main-domd secondary-domd"]
-                - [AOS_IAM_NODES, "main-domd secondary-domd"]
+                - [AOS_UM_NODES, "Node0-QM Node1-QM"]
+                - [AOS_IAM_NODES, "Node0-QM Node1-QM"]
                 - [
                     AOS_HOSTS,
-                    "10.0.0.1=wwwivi 10.0.0.1=main-domd 10.0.0.2=secondary-domd",
+                    "10.0.0.1=wwwivi 10.0.0.1=Node0-QM 10.0.0.2=Node1-QM",
                   ]
                 - [AOS_VIS_DATA_PROVIDER, "%{AOS_VIS_DATA_PROVIDER}"]
 
     "secondary":
       overrides:
         variables:
-          AOS_DOM0_NODE_ID: "secondary-dom0"
-          AOS_DOM0_NODE_TYPE: "rcar-secondary-dom0"
-          AOS_DOMD_NODE_ID: "secondary-domd"
-          AOS_DOMD_NODE_TYPE: "rcar-secondary-domd"
+          AOS_DOM0_NODE_ID: "Node1-ASIL"
+          AOS_DOM0_NODE_TYPE: "Node1-Zephyr"
+          AOS_DOMD_NODE_ID: "Node1-QM"
+          AOS_DOMD_NODE_TYPE: "Node1-Linux"
