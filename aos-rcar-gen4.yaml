@@ -37,7 +37,7 @@ variables:
   AOS_DOMD_NODE_ID: "main-domd"
   AOS_DOMD_NODE_TYPE: "rcar-main-domd"
 
-  AOS_BUNDLE_IMAGE_VERSION: "2.1.0-beta.1"
+  AOS_BUNDLE_IMAGE_VERSION: "2.0.1"
   AOS_ROOTFS_REF_VERSION: "2.0.0"
   AOS_UM_COMPONENT_PREFIX: "%{AOS_UNIT_MODEL}-%{AOS_UNIT_VERSION}-%{MACHINE}-"
 
@@ -51,43 +51,43 @@ common_data:
       # We can't use dunfell branch, due to conlict with openssl, which revision
       # is fixed to 1.1.1o, and poky will try to apply patches for newer version.
       # So, we have to use commit "386041424 efivar: change branch name to main".
-      rev: "386041424"
+      rev: "3860414240c332d80a01c63c4338026bb6ab7be8"
 
     - type: git
       url: "https://git.openembedded.org/meta-openembedded"
-      rev: "dunfell"
+      rev: "fc632d5bb0936e91e4e0191547b9aa8ca47b4ffe"
 
     - type: git
       url: "https://git.yoctoproject.org/meta-virtualization"
-      rev: "dunfell"
+      rev: "35c723774ee06b3c1831f00a2cbf25cbeae132e1"
 
     - type: git
       url: "git://git.yoctoproject.org/meta-security"
-      rev: "dunfell"
+      rev: "eb631c12be585d18beddbb41f6035772b2cb17d5"
 
     - type: git
       url: "git://git.yoctoproject.org/meta-selinux"
-      rev: "dunfell"
+      rev: "1924d975283210f0c36bc3c0e8ce516ccc06961f"
 
     - type: git
       url: "https://github.com/aoscloud/meta-aos"
-      rev: "develop"
+      rev: "v7.2.2"
 
     - type: git
       url: "https://github.com/renesas-rcar/meta-renesas.git"
-      rev: "dunfell"
+      rev: "194beecc5398ff04f8b350902560158d2c32d91b"
 
     - type: git
       url: "https://github.com/xen-troops/meta-xt-common"
-      rev: "dunfell"
+      rev: "a36260c04230d24a3819ae26e41f88de459776c9"
 
     - type: git
       url: "https://github.com/xen-troops/meta-xt-rcar"
-      rev: "dunfell"
+      rev: "4ced34ce59279e607fb32ea77caa67f591ae5080"
 
     - type: git
       url: "https://github.com/aoscloud/meta-aos-rcar-gen4"
-      rev: "develop"
+      rev: "v2.0.1"
 
   # Common configuration options for all yocto-based domains
   common_conf: &COMMON_CONF
@@ -168,7 +168,7 @@ components:
     sources:
       - type: west
         url: "https://github.com/aoscloud/aos_core_zephyr.git"
-        rev: "develop"
+        rev: "v0.2.2"
 
     builder:
       type: zephyr
