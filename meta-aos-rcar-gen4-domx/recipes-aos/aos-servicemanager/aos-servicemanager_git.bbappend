@@ -1,5 +1,8 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
+BRANCH = "develop"
+SRCREV = "769ef62fdc96347749d5786e8f7159dbe5771610"
+
 SRC_URI += " \
     file://optee-identity.conf \
 "
