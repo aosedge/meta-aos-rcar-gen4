@@ -463,6 +463,8 @@ parameters:
             builder:
               conf:
                 - [AOS_SM_NODES, "main-domd main-dom0"]
+                - [AOS_IAM_NODES, "main-domd main-dom0"]
+                - [AOS_IAM_HOSTNAMES, "main-domd main-domd:8096"]
                 - [AOS_HOSTS, "127.0.0.1=wwwivi"]
                 - [AOS_VIS_DATA_PROVIDER, "%{AOS_VIS_DATA_PROVIDER}"]
 
@@ -477,7 +479,14 @@ parameters:
                     "main-domd main-dom0 secondary-domd secondary-dom0",
                   ]
                 - [AOS_UM_NODES, "main-domd secondary-domd"]
-                - [AOS_IAM_NODES, "main-domd secondary-domd"]
+                - [
+                    AOS_IAM_NODES,
+                    "main-domd main-dom0 secondary-domd secondary-dom0",
+                  ]
+                - [
+                    AOS_IAM_HOSTNAMES,
+                    "main-domd main-domd:8096 secondary-domd secondary-domd:8096",
+                  ]
                 - [
                     AOS_HOSTS,
                     "10.0.0.1=wwwivi 10.0.0.1=main-domd 10.0.0.2=secondary-domd",
