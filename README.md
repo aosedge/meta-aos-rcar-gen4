@@ -108,6 +108,13 @@ into NFS folder and copy the image into UFS, using the following command on S4 b
 dd if=/full.img of=/dev/sda bs=32M
 ```
 
+If the board was provisioned before it is required to clean the zephyr storage in order to perform provisioning
+procedure again:
+
+```sh
+dd if=/dev/zero of=/dev/mmcblk0 bs=32M count=1
+```
+
 Alternatively, [prod-devel-rcar-gen4](https://github.com/xen-troops/meta-xt-prod-devel-rcar-gen4) build could be used
 to start the board over TFTP+NFS.
 
