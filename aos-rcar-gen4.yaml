@@ -475,16 +475,16 @@ parameters:
               conf:
                 - [
                     AOS_SM_NODES,
-                    "main-domd main-dom0 secondary-domd secondary-dom0",
+                    "main-domd main-dom0 secondary-dom0 secondary-domd",
                   ]
                 - [AOS_UM_NODES, "main-domd secondary-domd"]
                 - [
                     AOS_IAM_NODES,
-                    "main-domd main-dom0 secondary-domd secondary-dom0",
+                    "main-domd main-dom0 secondary-dom0 secondary-domd",
                   ]
                 - [
                     AOS_IAM_HOSTNAMES,
-                    "main-domd main-domd:8096 secondary-domd secondary-domd:8096",
+                    "main-domd main-domd:8096 secondary-domd:8096 secondary-domd",
                   ]
                 - [
                     AOS_HOSTS,
