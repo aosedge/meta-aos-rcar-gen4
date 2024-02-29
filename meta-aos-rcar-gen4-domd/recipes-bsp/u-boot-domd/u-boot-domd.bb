@@ -17,7 +17,7 @@ UBOOT_URL = "git://github.com/xen-troops/u-boot.git"
 BRANCH = "zephyr_rcar_ipl_v2023.10"
 
 SRC_URI = "${UBOOT_URL};branch=${BRANCH};protocol=https"
-SRCREV = "${AUTOREV}"
+SRCREV = "b4f2a63f137b2a4fe4e6107061ee716e30ce2b1e"
 PV = "v2020.10+git${SRCPV}"
 
 UBOOT_CONFIG = "rcar4_xen_defconfig"
