@@ -30,7 +30,10 @@ IMAGE_INSTALL += " kernel-module-ixgbe"
 
 IMAGE_INSTALL += " e2fsprogs"
 
-IMAGE_INSTALL += " aos-messageproxy"
+IMAGE_INSTALL += " \
+    aos-messageproxy \
+    aos-udev-rules \
+"
 
 # Set fixed rootfs size
 IMAGE_ROOTFS_SIZE ?= "1048576"

@@ -1,4 +1,5 @@
 FILESEXTRAPATHS:prepend:aos-main-node := "${THISDIR}/files/main-node:"
+FILESEXTRAPATHS:prepend:aos-secondary-node := "${THISDIR}/files/secondary-node:"
 
 SRC_URI:append:aos-main-node = " \
     file://aos-vis-service.conf \

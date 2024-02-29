@@ -1,5 +1,5 @@
 desc: "Aos development setup for Renesas RCAR Gen4 hardware"
-min_ver: "0.21"
+min_ver: "0.22"
 
 variables:
   # Build dirs
@@ -37,8 +37,8 @@ variables:
   AOS_DOMD_NODE_ID: "main-domd"
   AOS_DOMD_NODE_TYPE: "rcar-main-domd"
 
-  AOS_BUNDLE_IMAGE_VERSION: "2.0.1"
-  AOS_ROOTFS_REF_VERSION: "2.0.0"
+  AOS_BUNDLE_IMAGE_VERSION: "2.1.0-beta.1"
+  AOS_ROOTFS_REF_VERSION: "2.0.1"
   AOS_UM_COMPONENT_PREFIX: "%{AOS_UNIT_MODEL}-%{AOS_UNIT_VERSION}-%{MACHINE}-"
 
   AOS_BASE_IMAGE: "aos-image-rcar"
@@ -180,6 +180,8 @@ components:
         - 'CONFIG_AOS_NODE_TYPE="%{AOS_DOM0_NODE_TYPE}"'
         - 'CONFIG_DOMD_UBOOT_PATH="../../../%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/u-boot-domd.bin"'
         - 'CONFIG_DOMD_DTB_PATH="../../../%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{XT_DOMD_DTB_NAME}"'
+        - 'CONFIG_TA_DEPLOY_DIR="../../../%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/ta"'
+        - 'CONFIG_AOS_ROOT_CA_PATH="../../../%{YOCTOS_WORK_DIR}/meta-aos/recipes-aos/aos-rootca/files/Aos_Root_CA.pem"'
 
       shields:
         - "xen_dom0"
@@ -220,9 +222,6 @@ components:
 
       build_target: "%{AOS_BASE_IMAGE}"
       layers:
-        - "../poky/meta"
-        - "../poky/meta-poky"
-        - "../poky/meta-yocto-bsp"
         - "../meta-virtualization"
         - "../meta-openembedded/meta-oe"
         - "../meta-openembedded/meta-networking"
@@ -313,10 +312,10 @@ components:
         - "output/fota/%{AOS_UM_COMPONENT_PREFIX}%{AOS_BUNDLE_IMAGE_VERSION}.tar"
 
       additional_deps:
+        - "%{DOM0_BUILD_DIR}/build/zephyr/zephyr.bin"
         - "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
         - "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xenpolicy-%{MACHINE}"
         - "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{XT_XEN_DTB_NAME}"
-        - "%{DOM0_BUILD_DIR}/build/zephyr/zephyr.bin"
         - "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image-%{MACHINE}.bin"
         - "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/aos-image-initramfs-%{MACHINE}.cpio.gz"
         - "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/boot.uImage"
@@ -463,6 +462,8 @@ parameters:
             builder:
               conf:
                 - [AOS_SM_NODES, "main-domd main-dom0"]
+                - [AOS_IAM_NODES, "main-domd main-dom0"]
+                - [AOS_IAM_HOSTNAMES, "main-domd main-domd:8096"]
                 - [AOS_HOSTS, "127.0.0.1=wwwivi"]
                 - [AOS_VIS_DATA_PROVIDER, "%{AOS_VIS_DATA_PROVIDER}"]
 
@@ -474,10 +475,17 @@ parameters:
               conf:
                 - [
                     AOS_SM_NODES,
-                    "main-domd main-dom0 secondary-domd secondary-dom0",
+                    "main-domd main-dom0 secondary-dom0 secondary-domd",
                   ]
                 - [AOS_UM_NODES, "main-domd secondary-domd"]
-                - [AOS_IAM_NODES, "main-domd secondary-domd"]
+                - [
+                    AOS_IAM_NODES,
+                    "main-domd main-dom0 secondary-dom0 secondary-domd",
+                  ]
+                - [
+                    AOS_IAM_HOSTNAMES,
+                    "main-domd main-domd:8096 secondary-domd:8096 secondary-domd",
+                  ]
                 - [
                     AOS_HOSTS,
                     "10.0.0.1=wwwivi 10.0.0.1=main-domd 10.0.0.2=secondary-domd",
