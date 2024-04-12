@@ -12,17 +12,17 @@ LDFLAGS:remove = "-fuse-ld=lld"
 
 DEPENDS += "u-boot-mkimage-native"
 
-do_deploy_append () {
+do_deploy:append () {
     if [ -f ${D}/boot/xen ]; then
         uboot-mkimage -A arm64 -C none -T kernel -a 0x78080000 -e 0x78080000 -n "XEN" -d ${D}/boot/xen ${DEPLOYDIR}/xen-${MACHINE}.uImage
         ln -sfr ${DEPLOYDIR}/xen-${MACHINE}.uImage ${DEPLOYDIR}/xen-uImage
     fi
 }
 
-SRC_URI_append_spider = " \
+SRC_URI:append:spider = " \
     file://early_printk_spider.cfg \
 "
 
-do_configure_append() {
+do_configure:append() {
     oe_runmake xt_defconfig
 }

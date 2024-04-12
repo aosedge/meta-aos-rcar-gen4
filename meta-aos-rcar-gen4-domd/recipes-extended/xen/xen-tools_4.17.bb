@@ -7,7 +7,7 @@ S = "${WORKDIR}/git"
 require xen.inc
 require xen-tools.inc
 
-PACKAGECONFIG_append = " \
+PACKAGECONFIG:append = " \
     xsm \
 "
 
