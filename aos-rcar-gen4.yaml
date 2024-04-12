@@ -37,8 +37,8 @@ variables:
   AOS_DOMD_NODE_ID: "main-domd"
   AOS_DOMD_NODE_TYPE: "rcar-main-domd"
 
-  AOS_BUNDLE_IMAGE_VERSION: "2.1.0-beta.1"
-  AOS_ROOTFS_REF_VERSION: "2.0.1"
+  AOS_BUNDLE_IMAGE_VERSION: "2.2.0"
+  AOS_ROOTFS_REF_VERSION: "2.1.0"
   AOS_UM_COMPONENT_PREFIX: "%{AOS_UNIT_MODEL}-%{AOS_UNIT_VERSION}-%{MACHINE}-"
 
   AOS_BASE_IMAGE: "aos-image-rcar"
@@ -48,46 +48,43 @@ common_data:
   sources: &COMMON_SOURCES
     - type: git
       url: "https://git.yoctoproject.org/poky"
-      # We can't use dunfell branch, due to conlict with openssl, which revision
-      # is fixed to 1.1.1o, and poky will try to apply patches for newer version.
-      # So, we have to use commit "386041424 efivar: change branch name to main".
-      rev: "3860414240c332d80a01c63c4338026bb6ab7be8"
+      rev: "kirkstone"
 
     - type: git
       url: "https://git.openembedded.org/meta-openembedded"
-      rev: "fc632d5bb0936e91e4e0191547b9aa8ca47b4ffe"
+      rev: "kirkstone"
 
     - type: git
       url: "https://git.yoctoproject.org/meta-virtualization"
-      rev: "35c723774ee06b3c1831f00a2cbf25cbeae132e1"
+      rev: "kirkstone"
 
     - type: git
       url: "git://git.yoctoproject.org/meta-security"
-      rev: "eb631c12be585d18beddbb41f6035772b2cb17d5"
+      rev: "kirkstone"
 
     - type: git
       url: "git://git.yoctoproject.org/meta-selinux"
-      rev: "1924d975283210f0c36bc3c0e8ce516ccc06961f"
+      rev: "kirkstone"
 
     - type: git
       url: "https://github.com/aoscloud/meta-aos"
-      rev: "v7.2.2"
+      rev: "develop"
 
     - type: git
       url: "https://github.com/renesas-rcar/meta-renesas.git"
-      rev: "194beecc5398ff04f8b350902560158d2c32d91b"
+      rev: "kirkstone-dev"
 
     - type: git
       url: "https://github.com/xen-troops/meta-xt-common"
-      rev: "a36260c04230d24a3819ae26e41f88de459776c9"
+      rev: "master"
 
     - type: git
       url: "https://github.com/xen-troops/meta-xt-rcar"
-      rev: "4ced34ce59279e607fb32ea77caa67f591ae5080"
+      rev: "master"
 
     - type: git
       url: "https://github.com/aoscloud/meta-aos-rcar-gen4"
-      rev: "v2.0.1"
+      rev: "develop"
 
   # Common configuration options for all yocto-based domains
   common_conf: &COMMON_CONF
@@ -132,7 +129,7 @@ common_data:
         DISTRO_FEATURES_remove,
         "x11 gtk gobject-introspection-data wifi nfc
         bluetooth irda zeroconf 3g sysvinit acl alsa argp pcmcia usbgadget
-        usbhost opengl ptest multiarch wayland vulkan sysvinit",
+        usbhost opengl ptest multiarch wayland vulkan sysvinit pulseaudio",
       ]
     # Remove ptest to reduce the build time
     - [DISTRO_FEATURES_remove, "ptest"]
@@ -209,6 +206,10 @@ components:
         - [XT_KERNEL_BRANCH, "%{XT_KERNEL_BRANCH}"]
         - [XT_KERNEL_REV, "%{XT_KERNEL_REV}"]
         - [XT_OP_TEE_FLAVOUR, "%{XT_OPTEE_FLAVOR}"]
+
+        # Xen version
+        - [PREFERRED_VERSION_xen-tools, "4.17.0+git%"]
+        - [PREFERRED_VERSION_xen, "4.17.0+git%"]
 
         # Add boot script
         - [EXTRA_IMAGEDEPENDS:append, " boot-script"]
