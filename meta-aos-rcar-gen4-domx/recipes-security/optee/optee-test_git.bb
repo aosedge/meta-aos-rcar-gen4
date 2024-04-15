@@ -1,7 +1,7 @@
 SUMMARY = "OP-TEE sanity testsuite"
 HOMEPAGE = "https://github.com/OP-TEE/optee_test"
 
-LICENSE = "BSD & GPLv2"
+LICENSE = "BSD-2-Clause & GPL-2.0-only"
 LIC_FILES_CHKSUM = "file://LICENSE.md;md5=daa2bcccc666345ab8940aab1315a4fa"
 
 SRC_URI = "git://github.com/OP-TEE/optee_test.git;protocol=https;branch=master"
@@ -14,16 +14,19 @@ S = "${WORKDIR}/git"
 
 inherit python3native
 
-OPTEE_ARCH_aarch64 = "arm64"
+OPTEE_ARCH:aarch64 = "arm64"
 OPTEE_CLIENT_EXPORT = "${STAGING_DIR_HOST}${prefix}"
 TEEC_EXPORT         = "${STAGING_DIR_HOST}${prefix}"
 TA_DEV_KIT_DIR      = "${STAGING_INCDIR}/optee/export-user_ta_${OPTEE_ARCH}"
 
-DEPENDS = "optee-client optee-os python3-pycryptodome-native python3-cryptography-native"
+DEPENDS = "optee-client optee-os python3-cryptography-native openssl"
+
+CFLAGS += "-Wno-error=deprecated-declarations"
 
 EXTRA_OEMAKE = " \
     TA_DEV_KIT_DIR=${TA_DEV_KIT_DIR} \
     OPTEE_CLIENT_EXPORT=${OPTEE_CLIENT_EXPORT} \
+    OPTEE_OPENSSL_EXPORT=${STAGING_INCDIR} \
     TEEC_EXPORT=${TEEC_EXPORT} \
     CROSS_COMPILE_HOST=${TARGET_PREFIX} \
     CROSS_COMPILE_TA=${TARGET_PREFIX} \
@@ -32,6 +35,9 @@ EXTRA_OEMAKE = " \
 "
 
 do_compile() {
+    # WA for broken python3-cryptography-native:
+    # https://lore.kernel.org/all/CAJFpGrP11ifFQnK1n3MHvMUaJPwgh6igdav7zotvRQevX70vwg@mail.gmail.com/T/
+    export OPENSSL_MODULES="${STAGING_LIBDIR_NATIVE}/ossl-modules"
     # Top level makefile doesn't seem to handle parallel make gracefully
     oe_runmake xtest
     oe_runmake ta
