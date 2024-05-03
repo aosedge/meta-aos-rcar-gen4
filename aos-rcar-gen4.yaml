@@ -126,13 +126,13 @@ common_data:
 
     # Remove features that we are not using
     - [
-        DISTRO_FEATURES_remove,
+        DISTRO_FEATURES:remove,
         "x11 gtk gobject-introspection-data wifi nfc
         bluetooth irda zeroconf 3g sysvinit acl alsa argp pcmcia usbgadget
         usbhost opengl ptest multiarch wayland vulkan sysvinit pulseaudio",
       ]
     # Remove ptest to reduce the build time
-    - [DISTRO_FEATURES_remove, "ptest"]
+    - [DISTRO_FEATURES:remove, "ptest"]
 
     # Enable SELinux
     - [DISTRO_FEATURES:append, " acl xattr pam selinux"]
@@ -140,7 +140,7 @@ common_data:
     # Machine features
 
     # Add Capacity Aware migration Strategy (CAS)
-    - [MACHINE_FEATURES_append, " cas"]
+    - [MACHINE_FEATURES:append, " cas"]
 
     # SDK features
 
@@ -165,7 +165,7 @@ components:
     sources:
       - type: west
         url: "https://github.com/aoscloud/aos_core_zephyr.git"
-        rev: "v0.2.2"
+        rev: "develop"
 
     builder:
       type: zephyr
