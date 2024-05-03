@@ -1,14 +1,9 @@
-# stable-4.17 status on 5/26/2023
+require xen-source.inc
 
-PV = "${XEN_REL}+stable${SRCPV}"
-
-S = "${WORKDIR}/git"
-
-require xen.inc
-require xen-hypervisor.inc
-
-TOOLCHAIN = "gcc"
-LDFLAGS:remove = "-fuse-ld=lld"
+# We are dropping TUNE_CCARGS from for Xen because it won't build for armv8.2, as
+# it conflicts with -mcpu=generic provided by own Xen build system
+HOST_CC_ARCH:remove="-march=armv8.2-a+crypto"
+HOST_CC_ARCH:remove="-mcpu=cortex-a55"
 
 DEPENDS += "u-boot-mkimage-native"
 
@@ -17,12 +12,4 @@ do_deploy:append () {
         uboot-mkimage -A arm64 -C none -T kernel -a 0x78080000 -e 0x78080000 -n "XEN" -d ${D}/boot/xen ${DEPLOYDIR}/xen-${MACHINE}.uImage
         ln -sfr ${DEPLOYDIR}/xen-${MACHINE}.uImage ${DEPLOYDIR}/xen-uImage
     fi
-}
-
-SRC_URI:append:spider = " \
-    file://early_printk_spider.cfg \
-"
-
-do_configure:append() {
-    oe_runmake xt_defconfig
 }
