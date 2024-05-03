@@ -37,13 +37,8 @@ variables:
   AOS_DOMD_NODE_ID: "main-domd"
   AOS_DOMD_NODE_TYPE: "rcar-main-domd"
 
-<<<<<<< HEAD
-  AOS_BUNDLE_IMAGE_VERSION: "2.1.0"
-  AOS_ROOTFS_REF_VERSION: "2.0.1"
-=======
   AOS_BUNDLE_IMAGE_VERSION: "2.2.0"
   AOS_ROOTFS_REF_VERSION: "2.1.0"
->>>>>>> 40b3acf (Update gen4 recipes)
   AOS_UM_COMPONENT_PREFIX: "%{AOS_UNIT_MODEL}-%{AOS_UNIT_VERSION}-%{MACHINE}-"
 
   AOS_BASE_IMAGE: "aos-image-rcar"
@@ -131,13 +126,13 @@ common_data:
 
     # Remove features that we are not using
     - [
-        DISTRO_FEATURES_remove,
+        DISTRO_FEATURES:remove,
         "x11 gtk gobject-introspection-data wifi nfc
         bluetooth irda zeroconf 3g sysvinit acl alsa argp pcmcia usbgadget
         usbhost opengl ptest multiarch wayland vulkan sysvinit pulseaudio",
       ]
     # Remove ptest to reduce the build time
-    - [DISTRO_FEATURES_remove, "ptest"]
+    - [DISTRO_FEATURES:remove, "ptest"]
 
     # Enable SELinux
     - [DISTRO_FEATURES:append, " acl xattr pam selinux"]
@@ -145,7 +140,7 @@ common_data:
     # Machine features
 
     # Add Capacity Aware migration Strategy (CAS)
-    - [MACHINE_FEATURES_append, " cas"]
+    - [MACHINE_FEATURES:append, " cas"]
 
     # SDK features
 
@@ -169,8 +164,8 @@ components:
     build-dir: "%{DOM0_BUILD_DIR}"
     sources:
       - type: west
-        url: "https://github.com/aoscloud/aos_core_zephyr.git"
-        rev: "v0.3.0"
+        url: "https://github.com/aoscloud/aos_core_zephyr"
+        rev: "develop"
 
     builder:
       type: zephyr
