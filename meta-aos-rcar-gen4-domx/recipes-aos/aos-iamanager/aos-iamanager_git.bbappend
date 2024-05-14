@@ -13,7 +13,7 @@ FILES:${PN} += " \
 "
 
 RDEPENDS:${PN} += " \
-    optee-pkcs11-ta \
+    optee-os-ta \
     optee-client \
     aos-setupdisk \
 "
