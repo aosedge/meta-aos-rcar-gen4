@@ -12,7 +12,7 @@ variables:
 
   MACHINE: "spider"
   SOC_FAMILY: "r8a779f0"
-  ZEPHYR_MACHINE: "rcar_spider"
+  ZEPHYR_MACHINE: "rcar_spider_ca55"
 
   # XT config
 
@@ -180,7 +180,7 @@ components:
         - 'CONFIG_TA_DEPLOY_DIR="../../../%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/ta"'
         - 'CONFIG_AOS_ROOT_CA_PATH="../../../%{YOCTOS_WORK_DIR}/meta-aos/recipes-aos/aos-rootca/files/Aos_Root_CA.pem"'
 
-      shields:
+      snippets:
         - "xen_dom0"
 
       additional_deps:
