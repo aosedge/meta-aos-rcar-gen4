@@ -3,5 +3,5 @@ do_install:append() {
     sed -i '/\/sbin\/reboot/i \
     rm -rf /var/.nvme-work\n\
     sync\n\
-    xenstore-write control/user-reboot 2' ${D}${bindir}/${SELINUX_SCRIPT_SRC}.sh
+    xenstore-write data/user-reboot 2' ${D}${bindir}/${SELINUX_SCRIPT_SRC}.sh
 }
