@@ -23,7 +23,7 @@ variables:
   XT_OPTEE_FLAVOR: "spider_s4"
 
   XT_KERNEL_BRANCH: "v5.10.41/rcar-5.1.7.rc11.2-xt"
-  XT_KERNEL_REV: "${AUTOREV}"
+  XT_KERNEL_REV: "769ab722739878c3c1aaa1571f6ca996b135f8f6"
 
   # Aos config
   AOS_UNIT_MODEL: "rcar-multinode-zephyr"
@@ -48,43 +48,43 @@ common_data:
   sources: &COMMON_SOURCES
     - type: git
       url: "https://git.yoctoproject.org/poky"
-      rev: "kirkstone"
+      rev: "e575d02196b0013c25f8064e4dbe3fc2a0ef72d0"
 
     - type: git
       url: "https://git.openembedded.org/meta-openembedded"
-      rev: "kirkstone"
+      rev: "5a6f7925bd2b885955c942573f70a5594f231563"
 
     - type: git
       url: "https://git.yoctoproject.org/meta-virtualization"
-      rev: "kirkstone"
+      rev: "8f0eb65edaf6d280294c33446a9bb073a50b8c14"
 
     - type: git
       url: "git://git.yoctoproject.org/meta-security"
-      rev: "kirkstone"
+      rev: "353078bc06c8b471736daab6ed193e30d533d1f1"
 
     - type: git
       url: "git://git.yoctoproject.org/meta-selinux"
-      rev: "kirkstone"
+      rev: "a401f4b2816a0b41ce8d9351542658c721935bcd"
 
     - type: git
       url: "https://github.com/aoscloud/meta-aos"
-      rev: "develop"
+      rev: "v7.3.1"
 
     - type: git
       url: "https://github.com/renesas-rcar/meta-renesas"
-      rev: "kirkstone-dev"
+      rev: "11221be7ff3a535f17357bc8ac7e2851d0e8ff02"
 
     - type: git
       url: "https://github.com/xen-troops/meta-xt-common"
-      rev: "master"
+      rev: "v0.1.0"
 
     - type: git
       url: "https://github.com/xen-troops/meta-xt-rcar"
-      rev: "master"
+      rev: "v0.1.0"
 
     - type: git
       url: "https://github.com/aoscloud/meta-aos-rcar-gen4"
-      rev: "develop"
+      rev: "v2.2.0"
 
   # Common configuration options for all yocto-based domains
   common_conf: &COMMON_CONF
@@ -165,7 +165,7 @@ components:
     sources:
       - type: west
         url: "https://github.com/aoscloud/aos_core_zephyr"
-        rev: "develop"
+        rev: "v0.3.2"
 
     builder:
       type: zephyr
