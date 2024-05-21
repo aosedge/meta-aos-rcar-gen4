@@ -12,7 +12,7 @@ variables:
 
   MACHINE: "spider"
   SOC_FAMILY: "r8a779f0"
-  ZEPHYR_MACHINE: "rcar_spider"
+  ZEPHYR_MACHINE: "rcar_spider_ca55"
 
   # XT config
 
@@ -37,8 +37,8 @@ variables:
   AOS_DOMD_NODE_ID: "main-domd"
   AOS_DOMD_NODE_TYPE: "rcar-main-domd"
 
-  AOS_BUNDLE_IMAGE_VERSION: "2.1.0"
-  AOS_ROOTFS_REF_VERSION: "2.0.1"
+  AOS_BUNDLE_IMAGE_VERSION: "2.2.0"
+  AOS_ROOTFS_REF_VERSION: "2.1.0"
   AOS_UM_COMPONENT_PREFIX: "%{AOS_UNIT_MODEL}-%{AOS_UNIT_VERSION}-%{MACHINE}-"
 
   AOS_BASE_IMAGE: "aos-image-rcar"
@@ -48,46 +48,43 @@ common_data:
   sources: &COMMON_SOURCES
     - type: git
       url: "https://git.yoctoproject.org/poky"
-      # We can't use dunfell branch, due to conlict with openssl, which revision
-      # is fixed to 1.1.1o, and poky will try to apply patches for newer version.
-      # So, we have to use commit "386041424 efivar: change branch name to main".
-      rev: "3860414240c332d80a01c63c4338026bb6ab7be8"
+      rev: "kirkstone"
 
     - type: git
       url: "https://git.openembedded.org/meta-openembedded"
-      rev: "daa4619fe3fbf8c28f342c4a7163a84a330f7653"
+      rev: "kirkstone"
 
     - type: git
       url: "https://git.yoctoproject.org/meta-virtualization"
-      rev: "35c723774ee06b3c1831f00a2cbf25cbeae132e1"
+      rev: "kirkstone"
 
     - type: git
       url: "git://git.yoctoproject.org/meta-security"
-      rev: "eb631c12be585d18beddbb41f6035772b2cb17d5"
+      rev: "kirkstone"
 
     - type: git
       url: "git://git.yoctoproject.org/meta-selinux"
-      rev: "1924d975283210f0c36bc3c0e8ce516ccc06961f"
+      rev: "kirkstone"
 
     - type: git
       url: "https://github.com/aoscloud/meta-aos"
-      rev: "v7.2.3"
+      rev: "develop"
 
     - type: git
-      url: "https://github.com/renesas-rcar/meta-renesas.git"
-      rev: "4941df1a132aaac4237c800bf553a806cbca22d6"
+      url: "https://github.com/renesas-rcar/meta-renesas"
+      rev: "kirkstone-dev"
 
     - type: git
       url: "https://github.com/xen-troops/meta-xt-common"
-      rev: "a36260c04230d24a3819ae26e41f88de459776c9"
+      rev: "master"
 
     - type: git
       url: "https://github.com/xen-troops/meta-xt-rcar"
-      rev: "3fc1b53a7322706747f3b48305ed0662c6260f0b"
+      rev: "master"
 
     - type: git
       url: "https://github.com/aoscloud/meta-aos-rcar-gen4"
-      rev: "v2.1.0"
+      rev: "develop"
 
   # Common configuration options for all yocto-based domains
   common_conf: &COMMON_CONF
@@ -129,13 +126,13 @@ common_data:
 
     # Remove features that we are not using
     - [
-        DISTRO_FEATURES_remove,
+        DISTRO_FEATURES:remove,
         "x11 gtk gobject-introspection-data wifi nfc
         bluetooth irda zeroconf 3g sysvinit acl alsa argp pcmcia usbgadget
-        usbhost opengl ptest multiarch wayland vulkan sysvinit",
+        usbhost opengl ptest multiarch wayland vulkan sysvinit pulseaudio",
       ]
     # Remove ptest to reduce the build time
-    - [DISTRO_FEATURES_remove, "ptest"]
+    - [DISTRO_FEATURES:remove, "ptest"]
 
     # Enable SELinux
     - [DISTRO_FEATURES:append, " acl xattr pam selinux"]
@@ -143,7 +140,7 @@ common_data:
     # Machine features
 
     # Add Capacity Aware migration Strategy (CAS)
-    - [MACHINE_FEATURES_append, " cas"]
+    - [MACHINE_FEATURES:append, " cas"]
 
     # SDK features
 
@@ -167,8 +164,8 @@ components:
     build-dir: "%{DOM0_BUILD_DIR}"
     sources:
       - type: west
-        url: "https://github.com/aoscloud/aos_core_zephyr.git"
-        rev: "v0.3.0"
+        url: "https://github.com/aoscloud/aos_core_zephyr"
+        rev: "develop"
 
     builder:
       type: zephyr
@@ -180,10 +177,10 @@ components:
         - 'CONFIG_AOS_NODE_TYPE="%{AOS_DOM0_NODE_TYPE}"'
         - 'CONFIG_DOMD_UBOOT_PATH="../../../%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/u-boot-domd.bin"'
         - 'CONFIG_DOMD_DTB_PATH="../../../%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{XT_DOMD_DTB_NAME}"'
-        - 'CONFIG_TA_DEPLOY_DIR="../../../%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/ta"'
+        - 'CONFIG_TA_DEPLOY_DIR="../../../%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/aos/ta"'
         - 'CONFIG_AOS_ROOT_CA_PATH="../../../%{YOCTOS_WORK_DIR}/meta-aos/recipes-aos/aos-rootca/files/Aos_Root_CA.pem"'
 
-      shields:
+      snippets:
         - "xen_dom0"
 
       additional_deps:
@@ -210,6 +207,10 @@ components:
         - [XT_KERNEL_REV, "%{XT_KERNEL_REV}"]
         - [XT_OP_TEE_FLAVOUR, "%{XT_OPTEE_FLAVOR}"]
 
+        # Xen version
+        - [PREFERRED_VERSION_xen-tools, "4.17.0+git%"]
+        - [PREFERRED_VERSION_xen, "4.17.0+git%"]
+
         # Add boot script
         - [EXTRA_IMAGEDEPENDS:append, " boot-script"]
 
@@ -234,6 +235,7 @@ components:
         - "../meta-renesas/meta-rcar-gateway"
         - "../meta-xt-common/meta-xt-domx"
         - "../meta-xt-common/meta-xt-driver-domain"
+        - "../meta-xt-common/meta-xt-security"
         - "../meta-xt-rcar/meta-xt-gateway/meta-xt-domd-gen4"
         - "../meta-xt-rcar/meta-xt-gateway/meta-xt-domx-gen4"
         - "../meta-aos-rcar-gen4/meta-aos-rcar-gen4-domx"
@@ -278,7 +280,7 @@ components:
     builder:
       type: custom_script
       work_dir: "layers"
-      script: "yocto/meta-aos/scripts/layer_builder.py"
+      script: "../yocto/meta-aos/scripts/layer_builder.py"
       target_images:
         - "output/layers/nodejs-layer.tar"
         - "output/layers/pylibs-layer.tar"
@@ -288,9 +290,9 @@ components:
         - "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{AOS_BASE_IMAGE}-%{MACHINE}.ext4"
 
       layers:
-        yocto_dir: "%{YOCTOS_WORK_DIR}"
+        yocto_dir: "../%{YOCTOS_WORK_DIR}"
         build_dir: "%{DOMD_BUILD_DIR}"
-        output_dir: "output/layers"
+        output_dir: "../output/layers"
         base_image: "%{AOS_BASE_IMAGE}"
         items:
           nodejs-layer:
@@ -306,10 +308,10 @@ components:
     builder:
       type: custom_script
       work_dir: "fota"
-      script: "yocto/meta-aos/scripts/fota_builder.py"
+      script: "../yocto/meta-aos/scripts/fota_builder.py"
       args: "-v"
       target_images:
-        - "output/fota/%{AOS_UM_COMPONENT_PREFIX}%{AOS_BUNDLE_IMAGE_VERSION}.tar"
+        - "../output/fota/%{AOS_UM_COMPONENT_PREFIX}%{AOS_BUNDLE_IMAGE_VERSION}.tar"
 
       additional_deps:
         - "%{DOM0_BUILD_DIR}/build/zephyr/zephyr.bin"
@@ -334,20 +336,20 @@ components:
             type: ext4
             size: 256 MiB
             items:
-              "xen": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
-              "xenpolicy": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xenpolicy-%{MACHINE}"
-              "xen.dtb": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{XT_XEN_DTB_NAME}"
-              "zephyr.bin": "%{DOM0_BUILD_DIR}/build/zephyr/zephyr.bin"
-              "linux-domd": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image-%{MACHINE}.bin"
-              "initramfs-domd": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/aos-image-initramfs-%{MACHINE}.cpio.gz"
-              "boot.uImage": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/boot.uImage"
-              "aos/version": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/aos/boot/version"
+              "xen": "../%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
+              "xenpolicy": "../%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xenpolicy-%{MACHINE}"
+              "xen.dtb": "../%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{XT_XEN_DTB_NAME}"
+              "zephyr.bin": "../%{DOM0_BUILD_DIR}/build/zephyr/zephyr.bin"
+              "linux-domd": "../%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image-%{MACHINE}.bin"
+              "initramfs-domd": "../%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/aos-image-initramfs-%{MACHINE}.cpio.gz"
+              "boot.uImage": "../%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/boot.uImage"
+              "aos/version": "../%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/aos/boot/version"
 
         rootfs-full:
           componentType: "%{AOS_UM_COMPONENT_PREFIX}domd"
           enabled: true
           method: "overlay"
-          yocto_dir: "%{YOCTOS_WORK_DIR}"
+          yocto_dir: "../%{YOCTOS_WORK_DIR}"
           build_dir: "%{DOMD_BUILD_DIR}"
           type: "full"
           description: "gen4-domd rootfs image"
@@ -360,7 +362,7 @@ components:
           componentType: "%{AOS_UM_COMPONENT_PREFIX}domd"
           enabled: false
           method: "overlay"
-          yocto_dir: "%{YOCTOS_WORK_DIR}"
+          yocto_dir: "../%{YOCTOS_WORK_DIR}"
           build_dir: "%{DOMD_BUILD_DIR}"
           type: "incremental"
           description: "gen4-domd rootfs image"
