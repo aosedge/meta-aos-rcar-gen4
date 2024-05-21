@@ -71,7 +71,7 @@ common_data:
       rev: "develop"
 
     - type: git
-      url: "https://github.com/renesas-rcar/meta-renesas.git"
+      url: "https://github.com/renesas-rcar/meta-renesas"
       rev: "kirkstone-dev"
 
     - type: git
