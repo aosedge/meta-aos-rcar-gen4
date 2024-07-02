@@ -2,14 +2,14 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 FILESEXTRAPATHS:prepend:aos-main-node := "${THISDIR}/files/main-node:"
 FILESEXTRAPATHS:prepend:aos-secondary-node := "${THISDIR}/files/secondary-node:"
 
-RENESASOTA_IMPORT = "github.com/aoscloud/aos-core-rcar-gen4"
+RENESASOTA_IMPORT = "github.com/aosedge/aos-core-rcar-gen4"
 
 SRC_URI += " \
     git://git@${RENESASOTA_IMPORT}.git;branch=main;protocol=ssh;name=renesasota;destsuffix=${S}/src/${GO_IMPORT}/vendor/${RENESASOTA_IMPORT} \
 "
 
 SRCREV_FORMAT = "renesasota"
-SRCREV_renesasota = "0b701b26bc5f7b663e331a9d6ec426f28b7a01a7"
+SRCREV_renesasota = "81d8eb436da51f3106bc76db8823211e3d3b21fd"
 
 FILES:${PN} += " \
     ${bindir} \
@@ -24,7 +24,7 @@ do_prepare_modules:append() {
 do_compile() {
     VENDOR_PACKAGES=" \
         github.com/syucream/posix_mq \
-        github.com/aoscloud/aos_common/aostypes \
+        github.com/aosedge/aos_common/aostypes \
     "
 
     for package in $VENDOR_PACKAGES; do
