@@ -12,13 +12,13 @@ SRC_URI += " \
 "
 
 FILES:${PN} += " \
-    ${sysconfdir}/systemd/network/tsn0.network \
-    ${sysconfdir}/systemd/network/tsn1.network \
-    ${sysconfdir}/systemd/network/vmq0.network \
+    ${sysconfdir}/systemd/network \
     ${sysconfdir}/systemd/system/systemd-networkd.service.d \
 "
 
 do_install:append() {
     install -d ${D}${sysconfdir}/systemd/system/systemd-networkd.service.d/
     install -m 0644 ${S}/interface-forward-systemd-networkd.conf ${D}${sysconfdir}/systemd/system/systemd-networkd.service.d
+    mv ${D}${sysconfdir}/systemd/network/tsn0.network ${D}${sysconfdir}/systemd/network/10-tsn0.network
+    mv ${D}${sysconfdir}/systemd/network/tsn1.network ${D}${sysconfdir}/systemd/network/10-tsn1.network
 }
