@@ -8,6 +8,9 @@
         },
         {
             "id": "rcar-gen4-1.0-spider-rh850"
+        },
+        {
+            "id": "rcar-gen4-1.0-spider-cluster"
         }
     ],
     "formatVersion": 1

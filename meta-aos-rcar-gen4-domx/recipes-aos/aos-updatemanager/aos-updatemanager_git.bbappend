@@ -9,6 +9,7 @@ SRC_URI += " \
 AOS_UM_UPDATE_MODULES = " \
     updatemodules/overlayxenstore \
     updatemodules/ubootdualpart \
+    updatemodules/sshmodule \
 "
 
 FILES:${PN} += " \
